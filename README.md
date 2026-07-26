@@ -16,6 +16,7 @@
 
 Write assembly code, see each character as a light flash across five colour channels, and run programs on the virtual machine. Everything runs locally in the browser.
 
+![PRISME Encoder — text to spectral light flashes](assets/prisme-encoder-screenshot.png)
 ---
 
 ## Documentation
