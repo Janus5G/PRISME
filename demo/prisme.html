@@ -1,356 +1,856 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#03060a">
-    <title>Refract3 · PRISME Glasplade-register</title>
-    <style>
-        :root {
-            color-scheme: dark;
-            --bg: #03060a;
-            --panel: rgba(7, 11, 18, 0.82);
-            --panel-solid: #0b1019;
-            --border: rgba(96, 114, 142, 0.38);
-            --text: #d8dee9;
-            --muted: #778398;
-            --cyan: #67d8e7;
-            --green: #55dda0;
-            --red: #ff4a3d;
-            --blue: #4695ff;
-            --violet: #8d63ff;
-            --uv: #d5c9ff;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRISME — spektral assembler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --plate:#06070C;
+  --panel:#0C0F17;
+  --panel-2:#111521;
+  --rule:#1E2434;
+  --ink:#C8CEDD;
+  --ink-dim:#69718A;
+  --ink-bright:#EDF1FA;
 
-        * { box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; }
+  --ch-r:#FF4A34;
+  --ch-g:#2FE06B;
+  --ch-b:#3C8CFF;
+  --ch-v:#7B4DFF;
+  --ch-uv:#CFC6FF;
+}
 
-        body {
-            margin: 0;
-            overflow: hidden;
-            background:
-                radial-gradient(circle at 50% 25%, rgba(24, 43, 92, 0.35), transparent 45rem),
-                var(--bg);
-            color: var(--text);
-            font-family: "Courier New", Courier, monospace;
-        }
+*{box-sizing:border-box;margin:0;padding:0}
 
-        button, input { font: inherit; }
-        button { cursor: pointer; }
+body{
+  background:var(--plate);
+  color:var(--ink);
+  font-family:'IBM Plex Mono',ui-monospace,monospace;
+  font-size:13px;
+  line-height:1.55;
+  padding:28px 22px 60px;
+  min-height:100vh;
+}
 
-        #canvas-container {
-            position: fixed;
-            inset: 0;
-            z-index: 1;
-        }
+/* ---------- kop ---------- */
+.masthead{max-width:1280px;margin:0 auto 26px;border-bottom:1px solid var(--rule);padding-bottom:20px}
+.wordmark{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;font-size:34px;letter-spacing:.22em;
+  color:var(--ink-bright);line-height:1;
+}
+.wordmark span:nth-child(1){color:var(--ch-r)}
+.wordmark span:nth-child(2){color:var(--ch-g)}
+.wordmark span:nth-child(3){color:var(--ch-b)}
+.wordmark span:nth-child(4){color:var(--ch-v)}
+.wordmark span:nth-child(5){color:var(--ch-uv)}
+.tagline{color:var(--ink-dim);font-size:12px;margin-top:9px;letter-spacing:.04em}
 
-        #canvas-container canvas { display: block; }
+/* ---------- bølgelængdeskala ---------- */
+.scale{max-width:1280px;margin:0 auto 24px;display:flex;gap:1px;border:1px solid var(--rule)}
+.scale div{flex:1;padding:9px 11px;font-size:10.5px;letter-spacing:.09em;background:var(--panel)}
+.scale b{display:block;font-size:14px;font-weight:600;letter-spacing:.04em;margin-bottom:2px}
+.scale small{display:block;color:var(--ink-dim);font-size:10px;letter-spacing:.03em}
 
-        .panel {
-            position: fixed;
-            z-index: 10;
-            border: 1px solid var(--border);
-            border-radius: 7px;
-            background: var(--panel);
-            box-shadow: 0 16px 50px rgba(0, 0, 0, 0.46), inset 0 1px rgba(255,255,255,.035);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
+/* ---------- gitter ---------- */
+.grid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start}
+@media(max-width:940px){.grid{grid-template-columns:1fr}}
 
-        #ui-overlay {
-            top: 20px;
-            left: 20px;
-            width: min(420px, calc(100vw - 40px));
-            padding: 19px;
-        }
+.card{background:var(--panel);border:1px solid var(--rule)}
+.card > h2{
+  font-family:'Space Grotesk',sans-serif;font-size:10.5px;font-weight:500;
+  letter-spacing:.19em;text-transform:uppercase;color:var(--ink-dim);
+  padding:11px 14px;border-bottom:1px solid var(--rule);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.card > h2 em{font-style:normal;color:var(--ink-dim);opacity:.6;letter-spacing:.06em}
+.card .body{padding:14px}
 
-        #channel-overlay {
-            top: 20px;
-            right: 20px;
-            width: min(330px, calc(100vw - 40px));
-            padding: 17px;
-        }
+/* ---------- editor ---------- */
+#editor{
+  width:100%;min-height:290px;resize:vertical;
+  background:#04050A;color:var(--ink);border:1px solid var(--rule);
+  font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.72;
+  padding:13px;tab-size:4;outline:none;
+}
+#editor:focus{border-color:#31405E}
 
-        #registry-log {
-            right: 20px;
-            bottom: 20px;
-            width: min(410px, calc(100vw - 40px));
-            max-height: 226px;
-            padding: 15px;
-            overflow-y: auto;
-        }
+.bar{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;align-items:center}
+button{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;
+  letter-spacing:.11em;text-transform:uppercase;
+  background:transparent;color:var(--ink);
+  border:1px solid var(--rule);padding:8px 14px;cursor:pointer;
+  transition:border-color .13s,color .13s,background .13s;
+}
+button:hover{border-color:#3C4A6A;color:var(--ink-bright)}
+button:focus-visible{outline:2px solid var(--ch-b);outline-offset:2px}
+button.key{border-color:#3A4C74;color:var(--ink-bright);background:#141B2B}
+button.key:hover{background:#1A2336}
+button:disabled{opacity:.32;cursor:default}
 
-        .eyebrow {
-            margin: 0 0 8px;
-            color: #8da1c0;
-            font-size: .67rem;
-            font-weight: bold;
-            letter-spacing: .16em;
-        }
+select{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;
+  background:var(--panel-2);color:var(--ink);border:1px solid var(--rule);
+  padding:8px 9px;cursor:pointer;outline:none;
+}
 
-        h1, h2 {
-            margin: 0;
-            color: #f5f7fb;
-            letter-spacing: .04em;
-        }
+/* ---------- spektralbånd ---------- */
+.filmstrip{
+  display:flex;gap:2px;overflow-x:auto;padding:16px 14px 12px;
+  background:#03040A;border-bottom:1px solid var(--rule);
+  min-height:154px;align-items:flex-end;
+}
+.filmstrip::-webkit-scrollbar{height:7px}
+.filmstrip::-webkit-scrollbar-track{background:#06070C}
+.filmstrip::-webkit-scrollbar-thumb{background:var(--rule)}
 
-        h1 { font-size: 1.15rem; }
-        h2 { font-size: .76rem; text-transform: uppercase; letter-spacing: .12em; }
+.flash{flex:0 0 auto;width:22px;cursor:pointer;position:relative;padding-top:12px}
+.flash .bands{display:flex;flex-direction:column;gap:1px}
+.band{height:16px;border-radius:1px;transition:opacity .12s}
+.flash .addr{
+  text-align:center;font-size:8.5px;color:#39415A;margin-top:6px;letter-spacing:.02em;
+}
+.flash.pc .addr{color:var(--ch-uv)}
+.flash::before{
+  content:'';position:absolute;top:2px;left:50%;transform:translateX(-50%);
+  width:5px;height:5px;background:transparent;border-radius:50%;
+}
+.flash.pc::before{background:var(--ch-uv);box-shadow:0 0 9px var(--ch-uv)}
+.flash.sel .bands{outline:1px solid #4A5878;outline-offset:2px}
+.band.uv{
+  background-image:repeating-linear-gradient(135deg,var(--ch-uv) 0 2px,transparent 2px 4px);
+  background-color:transparent !important;
+}
 
-        .intro {
-            margin: 8px 0 15px;
-            color: #8b96a8;
-            font-size: .73rem;
-            line-height: 1.55;
-        }
+.strip-empty{color:var(--ink-dim);font-size:11.5px;padding:44px 4px;letter-spacing:.05em}
 
-        .registry-state {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1px;
-            margin: 0 -19px 15px;
-            border-block: 1px solid var(--border);
-            background: var(--border);
-        }
+/* ---------- inspektør ---------- */
+.inspect{padding:13px 14px;border-bottom:1px solid var(--rule);font-size:11.5px;min-height:46px}
+.inspect .lead{color:var(--ink-bright);font-weight:500;letter-spacing:.03em}
+.inspect .meta{color:var(--ink-dim);margin-top:3px;font-size:10.5px;letter-spacing:.04em}
+.inspect .meta i{font-style:normal;color:#8892AB}
 
-        .registry-state div {
-            padding: 10px 19px;
-            background: rgba(10, 15, 24, .94);
-        }
+/* ---------- konsol ---------- */
+#konsol{
+  background:#03040A;color:#B9E8C9;padding:13px;min-height:74px;max-height:200px;
+  overflow:auto;white-space:pre-wrap;word-break:break-word;font-size:13px;line-height:1.65;
+}
+#konsol .err{color:#FF6B57;display:block}
+#konsol .note{color:var(--ink-dim)}
 
-        .registry-state span {
-            display: block;
-            margin-bottom: 4px;
-            color: var(--muted);
-            font-size: .58rem;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-        }
+/* ---------- register ---------- */
+.regs{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule)}
+.reg{background:var(--panel-2);padding:10px 8px;text-align:center}
+.reg b{display:block;font-size:9.5px;letter-spacing:.16em;color:var(--ink-dim);font-weight:500}
+.reg u{display:block;text-decoration:none;font-size:19px;color:var(--ink-bright);margin-top:3px;font-weight:300}
+.reg i{display:block;font-style:normal;font-size:9px;color:#4E5670;letter-spacing:.09em;margin-top:1px}
 
-        .registry-state strong { color: #eef2f8; font-size: .76rem; font-weight: normal; }
-        .registry-state .live { color: var(--green); }
-        .registry-state .offline { color: #f4a179; }
+.statline{display:flex;gap:14px;padding:10px 14px;font-size:10.5px;letter-spacing:.07em;color:var(--ink-dim);border-top:1px solid var(--rule);flex-wrap:wrap}
+.statline b{color:var(--ink-bright);font-weight:500}
 
-        label {
-            display: block;
-            margin-bottom: 7px;
-            color: #8d99ab;
-            font-size: .61rem;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-        }
+/* ---------- tegnprøve ---------- */
+.probe{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.probe input{
+  flex:1;background:#04050A;border:1px solid var(--rule);color:var(--ink-bright);
+  font-family:'IBM Plex Mono',monospace;font-size:15px;padding:8px 10px;outline:none;
+}
+.probe input:focus{border-color:#31405E}
+.probe .big{
+  width:52px;text-align:center;font-size:19px;color:var(--ink-bright);
+  border:1px solid var(--rule);padding:6px 0;
+}
 
-        .input-row { display: flex; }
+.chart{width:100%;font-size:10.5px;border-collapse:collapse;margin-top:11px}
+.chart th{
+  text-align:left;color:var(--ink-dim);font-weight:400;letter-spacing:.1em;
+  padding:5px 6px;border-bottom:1px solid var(--rule);font-size:9.5px;text-transform:uppercase;
+}
+.chart td{padding:5px 6px;border-bottom:1px solid #141928;color:var(--ink)}
+.chart tr.hot td{color:var(--ink-bright);background:#101624}
+.chart td:first-child{color:var(--ink-dim)}
 
-        #payload-input {
-            min-width: 0;
-            flex: 1;
-            padding: 10px 11px;
-            outline: 0;
-            border: 1px solid #354159;
-            border-right: 0;
-            border-radius: 5px 0 0 5px;
-            background: #050810;
-            color: #fff;
-        }
+.legend{display:flex;gap:11px;padding:9px 14px;font-size:9.5px;letter-spacing:.09em;color:var(--ink-dim);border-top:1px solid var(--rule);flex-wrap:wrap}
+.legend span{display:flex;align-items:center;gap:5px}
+.legend i{width:9px;height:9px;display:inline-block;border-radius:1px}
 
-        #payload-input:focus { border-color: #6387b8; box-shadow: inset 0 0 0 1px #6387b8; }
+.helptext{font-size:10.5px;color:var(--ink-dim);line-height:1.62;padding:11px 14px;border-top:1px solid var(--rule)}
+.helptext code{color:#93A0BE}
 
-        #toggle-animation {
-            min-width: 78px;
-            border: 1px solid #405574;
-            border-radius: 0 5px 5px 0;
-            background: #182338;
-            color: #c1d4ef;
-            font-size: .68rem;
-        }
-
-        .address-card {
-            margin-top: 13px;
-            padding: 11px 12px;
-            border: 1px solid #2b3547;
-            border-radius: 5px;
-            background: rgba(4, 7, 13, .8);
-        }
-
-        .address-card span {
-            color: var(--muted);
-            font-size: .57rem;
-            letter-spacing: .09em;
-            text-transform: uppercase;
-        }
-
-        #registry-address {
-            margin: 6px 0 0;
-            color: #c7d6ed;
-            font-size: .78rem;
-            line-height: 1.45;
-            word-break: break-all;
-        }
-
-        #registry-meta { margin: 6px 0 0; color: #6f7b8d; font-size: .61rem; }
-
-        .panel-title {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 13px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(96,114,142,.24);
-        }
-
-        .panel-title a {
-            color: #8eb8f6;
-            font-size: .59rem;
-            text-decoration: none;
-        }
-
-        .channel {
-            display: grid;
-            grid-template-columns: 30px 1fr 58px 18px;
-            align-items: center;
-            gap: 8px;
-            min-height: 33px;
-        }
-
-        .channel b { font-size: .7rem; }
-        .channel small { color: #687386; font-size: .55rem; }
-
-        .meter {
-            height: 4px;
-            overflow: hidden;
-            border-radius: 3px;
-            background: #202735;
-        }
-
-        .meter i {
-            display: block;
-            width: 0;
-            height: 100%;
-            background: currentColor;
-            box-shadow: 0 0 8px currentColor;
-            transition: width .32s ease;
-        }
-
-        .channel em { color: #b9c1cd; font-size: .65rem; font-style: normal; text-align: right; }
-        .channel.red { color: var(--red); }
-        .channel.green { color: var(--green); }
-        .channel.blue { color: var(--blue); }
-        .channel.violet { color: var(--violet); }
-        .channel.uv { color: var(--uv); }
-
-        .encoding {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1px;
-            margin: 12px -17px -17px;
-            border-top: 1px solid var(--border);
-            background: var(--border);
-        }
-
-        .encoding div { padding: 10px 17px; background: rgba(10,15,24,.96); }
-        .encoding span { display: block; color: var(--muted); font-size: .55rem; text-transform: uppercase; }
-        .encoding strong { display: block; margin-top: 4px; color: #e9edf4; font-size: .73rem; font-weight: normal; }
-
-        .log-header { margin-bottom: 10px; color: var(--cyan); font-size: .68rem; font-weight: bold; letter-spacing: .08em; }
-        .log-entry {
-            margin-bottom: 8px;
-            padding-left: 8px;
-            border-left: 2px solid #52637d;
-            color: #a7b0bf;
-            font-size: .66rem;
-            line-height: 1.45;
-        }
-        .log-entry strong { color: #e4e8ef; }
-        .log-entry span { color: #667286; }
-
-        #stage-caption {
-            position: fixed;
-            z-index: 4;
-            left: 50%;
-            bottom: 22px;
-            transform: translateX(-50%);
-            padding: 7px 10px;
-            border: 1px solid rgba(98, 121, 154, .3);
-            border-radius: 99px;
-            background: rgba(3, 6, 10, .58);
-            color: #8b96a8;
-            font-size: .58rem;
-            letter-spacing: .1em;
-            text-transform: uppercase;
-            pointer-events: none;
-        }
-
-        @media (max-width: 850px) {
-            #ui-overlay { top: 10px; left: 10px; width: calc(100vw - 20px); padding: 14px; }
-            #channel-overlay { top: auto; right: 10px; bottom: 158px; width: calc(100vw - 20px); padding: 12px; }
-            #registry-log { right: 10px; bottom: 10px; width: calc(100vw - 20px); max-height: 136px; }
-            .intro { display: none; }
-            .registry-state { margin-inline: -14px; }
-            .registry-state div { padding-inline: 14px; }
-            .address-card { margin-top: 9px; }
-            .channel { min-height: 25px; }
-            .encoding { display: none; }
-            #stage-caption { display: none; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after { transition-duration: .01ms !important; }
-        }
-    </style>
+@media(prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
 </head>
 <body>
-    <div id="canvas-container" aria-hidden="true"></div>
 
-    <section id="ui-overlay" class="panel" aria-label="PRISME registerstatus">
-        <p class="eyebrow">CHROMAPLEX OS V2 / PRISME</p>
-        <h1>GLASPLADE-REGISTER</h1>
-        <p class="intro">Fem dichroiske glasplader visualiserer den næste ledige koordinat fra det levende ChromaPlex-register.</p>
+<div class="masthead">
+  <div class="wordmark"><span>P</span><span>R</span><span>I</span><span>S</span><span>M</span>E</div>
+  <div class="tagline">Assembler, encoder og virtuel maskine for et femkanals spektralt instruktionssæt · 10 bit per lysglimt</div>
+</div>
 
-        <div class="registry-state">
-            <div><span>Datakilde</span><strong id="source-state">Forbinder…</strong></div>
-            <div><span>Aktiv byte</span><strong id="active-byte">0x50 · 80</strong></div>
+<div class="scale">
+  <div style="border-left:3px solid var(--ch-r)"><b>R</b><small>630 nm · bit 7–6 · n 1,4580</small></div>
+  <div style="border-left:3px solid var(--ch-g)"><b>G</b><small>530 nm · bit 5–4 · n 1,4613</small></div>
+  <div style="border-left:3px solid var(--ch-b)"><b>B</b><small>470 nm · bit 3–2 · n 1,4650</small></div>
+  <div style="border-left:3px solid var(--ch-v)"><b>V</b><small>410 nm · bit 1–0 · n 1,4701</small></div>
+  <div style="border-left:3px solid var(--ch-uv)"><b>UV</b><small>350 nm · kontrolsum · n 1,4760</small></div>
+</div>
+
+<div class="grid">
+
+  <div>
+    <div class="card">
+      <h2>Kildekode <em>prisme-assembler</em></h2>
+      <div class="body">
+        <textarea id="editor" spellcheck="false"></textarea>
+        <div class="bar">
+          <button class="key" id="btnBuild">Oversæt</button>
+          <button id="btnRun">Kør</button>
+          <button id="btnStep">Trin</button>
+          <button id="btnReset">Nulstil</button>
+          <select id="samples">
+            <option value="hello">Eksempel · Hej med 256 tegn</option>
+            <option value="loop">Eksempel · Nedtælling</option>
+            <option value="math">Eksempel · Aritmetik</option>
+            <option value="table">Eksempel · Hele tegnsættet</option>
+          </select>
         </div>
+      </div>
+    </div>
 
-        <label for="payload-input">Tekst til PRISME-lysglimt</label>
-        <div class="input-row">
-            <input id="payload-input" value="PRISME" maxlength="24" autocomplete="off" spellcheck="false">
-            <button id="toggle-animation" type="button">Pause</button>
+    <div class="card" style="margin-top:16px">
+      <h2>Spektralbånd <em><span id="stripInfo">tomt</span></em></h2>
+      <div class="filmstrip" id="strip"><div class="strip-empty">Oversæt et program for at se det som lysglimt.</div></div>
+      <div class="inspect" id="inspect">
+        <div class="lead">Klik på et glimt for at læse det.</div>
+        <div class="meta">Hvert glimt bærer én byte i fire synlige kanaler plus en UV-kontrolsum.</div>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--ch-r)"></i>630 R</span>
+        <span><i style="background:var(--ch-g)"></i>530 G</span>
+        <span><i style="background:var(--ch-b)"></i>470 B</span>
+        <span><i style="background:var(--ch-v)"></i>410 V</span>
+        <span><i style="background-image:repeating-linear-gradient(135deg,var(--ch-uv) 0 2px,transparent 2px 4px)"></i>350 UV — skraveret, fordi øjet ikke ser den</span>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h2>Udskrift</h2>
+      <div id="konsol"><span class="note">Ingen kørsel endnu.</span></div>
+      <div class="statline">
+        <span>Glimt brugt: <b id="stCycles">0</b></span>
+        <span>Bit skrevet: <b id="stBits">0</b></span>
+        <span>Tilstand: <b id="stState">standset</b></span>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <h2>Maskine</h2>
+      <div class="regs">
+        <div class="reg"><b>A</b><u id="rA">0</u><i id="qA">0000</i></div>
+        <div class="reg"><b>B</b><u id="rB">0</u><i id="qB">0000</i></div>
+        <div class="reg"><b>C</b><u id="rC">0</u><i id="qC">0000</i></div>
+        <div class="reg"><b>D</b><u id="rD">0</u><i id="qD">0000</i></div>
+      </div>
+      <div class="statline">
+        <span>Tæller: <b id="stPc">0</b></span>
+        <span>Nulflag: <b id="stZ">0</b></span>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h2>Tegn til glimt</h2>
+      <div class="body">
+        <div class="probe">
+          <input id="probeChar" maxlength="1" value="H" aria-label="Tegn">
+          <input id="probeNum" class="big" value="72" aria-label="Kodepunkt">
         </div>
+        <div id="probeStrip" style="display:flex;gap:3px"></div>
+        <div class="meta" id="probeMeta" style="color:var(--ink-dim);font-size:10.5px;margin-top:9px;letter-spacing:.04em"></div>
+      </div>
+    </div>
 
-        <div class="address-card">
-            <span>Næste ledige registeradresse</span>
-            <p id="registry-address">Scanner registry…</p>
-            <p id="registry-meta">Internet Computer · afventer svar</p>
-        </div>
-    </section>
+    <div class="card" style="margin-top:16px">
+      <h2>Kapacitet per glimt</h2>
+      <div class="body" style="padding-bottom:6px">
+        <table class="chart" id="capTable">
+          <thead><tr><th>Niv.</th><th>Tilstande</th><th>Bit</th><th>Nyttelast</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="helptext">
+        Fire niveauer per kanal rammer <code>4⁴ = 256</code> på de synlige kanaler alene. Hele tegnsættet i ét glimt, og UV står fri til kontrol. Hver fordobling af niveauer koster cirka 6 dB signal-støj-forhold og giver kun 2 bit tilbage.
+      </div>
+    </div>
 
-    <aside id="channel-overlay" class="panel" aria-label="PRISME kanalniveauer">
-        <div class="panel-title">
-            <h2>Kanalniveauer</h2>
-            <a href="https://github.com/Janus5G/PRISME" target="_blank" rel="noopener noreferrer">PRISME ↗</a>
-        </div>
+    <div class="card" style="margin-top:16px">
+      <h2>Instruktionssæt <em>16 operationer</em></h2>
+      <div class="body" style="padding-top:8px;padding-bottom:6px">
+        <table class="chart" id="isaTable">
+          <thead><tr><th>R·G</th><th>Instruktion</th><th>Virkning</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="helptext">
+        Opkoden deler sig i fire kanaler: <code>R</code> klasse, <code>G</code> operation, <code>B</code> destination, <code>V</code> kilde. Afkoderen kan begynde på rød kanal alene. Registre er <code>A B C D</code>. Hukommelsen er 256 bytes — nøjagtig ét glimt bredt.
+        <br><br>Nulflaget sættes af aritmetik, <code>CMP</code>, <code>MOV</code> og <code>LOAD</code>. <code>SET</code> rører det ikke.
+      </div>
+    </div>
+  </div>
 
-        <div class="channel red"><b>R</b><small>630 nm · bit 7–6</small><div class="meter"><i id="meter-r"></i></div><em id="level-r">1</em></div>
-        <div class="channel green"><b>G</b><small>530 nm · bit 5–4</small><div class="meter"><i id="meter-g"></i></div><em id="level-g">1</em></div>
-        <div class="channel blue"><b>B</b><small>470 nm · bit 3–2</small><div class="meter"><i id="meter-b"></i></div><em id="level-b">0</em></div>
-        <div class="channel violet"><b>V</b><small>410 nm · bit 1–0</small><div class="meter"><i id="meter-v"></i></div><em id="level-v">0</em></div>
-        <div class="channel uv"><b>UV</b><small>405 nm · checksum</small><div class="meter"><i id="meter-uv"></i></div><em id="level-uv">2</em></div>
+</div>
 
-        <div class="encoding">
-            <div><span>Base-4</span><strong id="base4-value">1100</strong></div>
-            <div><span>Kapacitet</span><strong>10 bit / glimt</strong></div>
-        </div>
-    </aside>
+<script>
+/* ══════════════════════════════════════════════════════════
+   1 · SPEKTRAL ENCODER
+   En byte = fire kvaternære cifre = fire synlige kanaler.
+   UV bærer summen af de fire modulo 4.
+   ══════════════════════════════════════════════════════════ */
 
-    <section id="registry-log" class="panel" aria-label="Registerlog">
-        <div class="log-header">◈ LIVE REGISTER / OPTISK LEDGER</div>
-        <div id="log-entries"></div>
-    </section>
+const KANAL = [
+  {navn:'R',  nm:630, farve:'var(--ch-r)'},
+  {navn:'G',  nm:530, farve:'var(--ch-g)'},
+  {navn:'B',  nm:470, farve:'var(--ch-b)'},
+  {navn:'V',  nm:410, farve:'var(--ch-v)'},
+  {navn:'UV', nm:350, farve:'var(--ch-uv)'}
+];
 
-    <div id="stage-caption">5 glasplader · 4 intensitetsniveauer · UV-fejlkontrol</div>
+const NIVEAU_ALFA = [0.07, 0.34, 0.66, 1.0];
 
-    <script type="module" src="./app.js?v=prisme-glass-registry-2"></script>
+function kod(b){
+  b &= 0xFF;
+  const R = (b >> 6) & 3, G = (b >> 4) & 3, B = (b >> 2) & 3, V = b & 3;
+  return [R, G, B, V, (R + G + B + V) % 4];
+}
+function afkod(s){
+  const [R,G,B,V,UV] = s;
+  const b = (R<<6) | (G<<4) | (B<<2) | V;
+  return {byte:b, gyldig:((R+G+B+V)%4) === UV};
+}
+function base4(b){ const s = kod(b); return `${s[0]}${s[1]}${s[2]}${s[3]}`; }
+function hex(b){ return b.toString(16).toUpperCase().padStart(2,'0'); }
+
+/* ══════════════════════════════════════════════════════════
+   2 · INSTRUKTIONSSÆT
+   byte = klasse<<6 | op<<4 | dst<<2 | kilde
+   ══════════════════════════════════════════════════════════ */
+
+const REG = {A:0, B:1, C:2, D:3};
+const REGNAVN = ['A','B','C','D'];
+
+// mnemonic: [klasse, op, form, længde, beskrivelse]
+const ISA = {
+  NOP:   [0,0,'ingen',   1,'gør intet'],
+  HALT:  [0,1,'ingen',   1,'standser maskinen'],
+  OUT:   [0,2,'r',       1,'udskriver registret som tegn'],
+  EMIT:  [0,3,'r',       1,'udskriver registret som tal'],
+
+  ADD:   [1,0,'rr',      1,'d = d + s'],
+  SUB:   [1,1,'rr',      1,'d = d − s'],
+  MUL:   [1,2,'rr',      1,'d = d × s'],
+  XOR:   [1,3,'rr',      1,'d = d ⊻ s'],
+
+  SET:   [2,0,'ri',      2,'d = konstant'],
+  MOV:   [2,1,'rr',      1,'d = s'],
+  LOAD:  [2,2,'rm',      1,'d = hukommelse[s]'],
+  STORE: [2,3,'mr',      1,'hukommelse[d] = s'],
+
+  JMP:   [3,0,'a',       2,'springer til adresse'],
+  JZ:    [3,1,'a',       2,'springer hvis nulflag'],
+  JNZ:   [3,2,'a',       2,'springer hvis ikke nulflag'],
+  CMP:   [3,3,'rr',      1,'sammenligner, sætter nulflag']
+};
+
+const OPSLAG = {};
+for (const [m, d] of Object.entries(ISA)) OPSLAG[d[0]*4 + d[1]] = m;
+
+function afkodInstruktion(b, næste){
+  const klasse = (b>>6)&3, op = (b>>4)&3, dst = (b>>2)&3, kilde = b&3;
+  const m = OPSLAG[klasse*4 + op];
+  if (!m) return {tekst:'?', længde:1};
+  const form = ISA[m][2], len = ISA[m][3];
+  const n = næste === undefined ? '…' : næste;
+  let t = m;
+  if (form === 'r')  t += ' ' + REGNAVN[dst];
+  if (form === 'rr') t += ` ${REGNAVN[dst]}, ${REGNAVN[kilde]}`;
+  if (form === 'rm') t += ` ${REGNAVN[dst]}, [${REGNAVN[kilde]}]`;
+  if (form === 'mr') t += ` [${REGNAVN[dst]}], ${REGNAVN[kilde]}`;
+  if (form === 'ri') t += ` ${REGNAVN[dst]}, #${n}`;
+  if (form === 'a')  t += ` ${n}`;
+  return {tekst:t, længde:len, mnemonic:m, form};
+}
+
+/* ══════════════════════════════════════════════════════════
+   3 · ASSEMBLER — to gennemløb
+   ══════════════════════════════════════════════════════════ */
+
+function assembler(kilde){
+  const linjer = kilde.split('\n');
+  const fejl = [];
+  const stumper = [];   // {type, ...}
+  let adr = 0;
+  const mærker = {};
+
+  const læsReg = (t) => {
+    const r = REG[t.toUpperCase()];
+    if (r === undefined) throw new Error(`ukendt register "${t}"`);
+    return r;
+  };
+  const læsTal = (t) => {
+    t = t.trim();
+    if (/^'.'$/.test(t) || /^'.'$/u.test(t)) return t.codePointAt(1) & 0xFF;
+    if (t.startsWith('#')) t = t.slice(1);
+    if (/^0x[0-9a-f]+$/i.test(t)) return parseInt(t,16) & 0xFF;
+    if (/^-?\d+$/.test(t)) return ((parseInt(t,10) % 256) + 256) % 256;
+    return null;   // sandsynligvis et mærke
+  };
+
+  // ── gennemløb 1: mærker og adresser ─────────────────────
+  linjer.forEach((rå, i) => {
+    let l = rå.split(';')[0].trim();
+    if (!l) return;
+
+    const mm = l.match(/^([A-Za-zÆØÅæøå_][\wÆØÅæøå_]*):\s*(.*)$/);
+    if (mm){
+      if (mærker[mm[1]] !== undefined) fejl.push(`Linje ${i+1}: mærket "${mm[1]}" findes allerede`);
+      mærker[mm[1]] = adr;
+      l = mm[2].trim();
+      if (!l) return;
+    }
+
+    if (l.startsWith('.')){
+      const dm = l.match(/^\.(tekst|byte|plads)\s+(.*)$/i);
+      if (!dm){ fejl.push(`Linje ${i+1}: ukendt direktiv`); return; }
+      const slags = dm[1].toLowerCase(), rest = dm[2];
+      if (slags === 'tekst'){
+        const sm = rest.match(/^"([^"]*)"\s*(?:,\s*(.*))?$/);
+        if (!sm){ fejl.push(`Linje ${i+1}: .tekst kræver tekst i anførselstegn`); return; }
+        const bytes = [...sm[1]].map(c => c.codePointAt(0) & 0xFF);
+        if (sm[2]) sm[2].split(',').forEach(x => { const v = læsTal(x); if (v !== null) bytes.push(v); });
+        stumper.push({type:'data', bytes, linje:i+1, adr});
+        adr += bytes.length;
+      } else if (slags === 'byte'){
+        const bytes = rest.split(',').map(x => { const v = læsTal(x); return v === null ? 0 : v; });
+        stumper.push({type:'data', bytes, linje:i+1, adr});
+        adr += bytes.length;
+      } else {
+        const n = parseInt(rest,10) || 0;
+        stumper.push({type:'data', bytes:new Array(n).fill(0), linje:i+1, adr});
+        adr += n;
+      }
+      return;
+    }
+
+    const im = l.match(/^([A-Za-z]+)\s*(.*)$/);
+    if (!im){ fejl.push(`Linje ${i+1}: kan ikke læse "${l}"`); return; }
+    const m = im[1].toUpperCase();
+    if (!ISA[m]){ fejl.push(`Linje ${i+1}: ukendt instruktion "${im[1]}"`); return; }
+    stumper.push({type:'instr', m, args:im[2].trim(), linje:i+1, adr});
+    adr += ISA[m][3];
+  });
+
+  if (adr > 256) fejl.push(`Programmet fylder ${adr} bytes. Hukommelsen rummer 256.`);
+
+  // ── gennemløb 2: udsend bytes ───────────────────────────
+  const ud = [];
+  const kort = [];   // adresse → kildelinje
+
+  for (const s of stumper){
+    if (s.type === 'data'){
+      s.bytes.forEach(b => { ud.push(b & 0xFF); kort.push(s.linje); });
+      continue;
+    }
+    const [klasse, op, form, len] = ISA[s.m];
+    let dst = 0, kilde = 0, ekstra = null;
+    try {
+      if (form === 'ingen'){
+        if (s.args) throw new Error(`${s.m} tager ingen argumenter`);
+      } else if (form === 'r'){
+        dst = læsReg(s.args);
+      } else if (form === 'rr'){
+        const p = s.args.split(',');
+        if (p.length !== 2) throw new Error(`${s.m} kræver to registre`);
+        dst = læsReg(p[0].trim()); kilde = læsReg(p[1].trim());
+      } else if (form === 'ri'){
+        const p = s.args.split(',');
+        if (p.length !== 2) throw new Error(`${s.m} kræver register og værdi`);
+        dst = læsReg(p[0].trim());
+        let v = læsTal(p[1]);
+        if (v === null){
+          const nøgle = p[1].trim();
+          if (mærker[nøgle] === undefined) throw new Error(`ukendt mærke "${nøgle}"`);
+          v = mærker[nøgle];
+        }
+        ekstra = v;
+      } else if (form === 'rm'){
+        const p = s.args.split(',');
+        if (p.length !== 2) throw new Error(`${s.m} kræver register og [register]`);
+        dst = læsReg(p[0].trim());
+        const b = p[1].trim().match(/^\[\s*([A-Da-d])\s*\]$/);
+        if (!b) throw new Error(`kilden skal skrives som [A]`);
+        kilde = læsReg(b[1]);
+      } else if (form === 'mr'){
+        const p = s.args.split(',');
+        if (p.length !== 2) throw new Error(`${s.m} kræver [register] og register`);
+        const b = p[0].trim().match(/^\[\s*([A-Da-d])\s*\]$/);
+        if (!b) throw new Error(`målet skal skrives som [A]`);
+        dst = læsReg(b[1]); kilde = læsReg(p[1].trim());
+      } else if (form === 'a'){
+        let v = læsTal(s.args);
+        if (v === null){
+          const nøgle = s.args.trim();
+          if (mærker[nøgle] === undefined) throw new Error(`ukendt mærke "${nøgle}"`);
+          v = mærker[nøgle];
+        }
+        ekstra = v;
+      }
+    } catch(e){
+      fejl.push(`Linje ${s.linje}: ${e.message}`);
+      continue;
+    }
+
+    ud.push((klasse<<6) | (op<<4) | (dst<<2) | kilde);
+    kort.push(s.linje);
+    if (ekstra !== null){ ud.push(ekstra & 0xFF); kort.push(s.linje); }
+  }
+
+  return {bytes:ud, mærker, fejl, kort};
+}
+
+/* ══════════════════════════════════════════════════════════
+   4 · VIRTUEL MASKINE
+   ══════════════════════════════════════════════════════════ */
+
+class Prisme {
+  constructor(){ this.nulstil([]); }
+  nulstil(program){
+    this.hu = new Uint8Array(256);
+    program.forEach((b,i) => { if (i < 256) this.hu[i] = b; });
+    this.r = [0,0,0,0];
+    this.pc = 0;
+    this.z = 0;
+    this.kørende = program.length > 0;
+    this.glimt = 0;
+    this.ud = '';
+    this.længde = program.length;
+  }
+  flag(v){ this.z = (v & 0xFF) === 0 ? 1 : 0; return v & 0xFF; }
+
+  trin(){
+    if (!this.kørende) return false;
+    if (this.pc > 255){ this.kørende = false; return false; }
+
+    const b = this.hu[this.pc];
+    const klasse = (b>>6)&3, op = (b>>4)&3, dst = (b>>2)&3, kilde = b&3;
+    const næste = () => this.hu[(this.pc + 1) & 0xFF];
+    let hop = null, længde = 1;
+
+    if (klasse === 0){
+      if (op === 1){ this.kørende = false; }
+      else if (op === 2){ this.ud += String.fromCharCode(this.r[dst]); }
+      else if (op === 3){ this.ud += String(this.r[dst]); }
+    }
+    else if (klasse === 1){
+      const a = this.r[dst], s = this.r[kilde];
+      const res = op===0 ? a+s : op===1 ? a-s : op===2 ? a*s : a^s;
+      this.r[dst] = this.flag(((res % 256) + 256) % 256);
+    }
+    else if (klasse === 2){
+      if (op === 0){ this.r[dst] = næste(); længde = 2; }
+      else if (op === 1){ this.r[dst] = this.flag(this.r[kilde]); }
+      else if (op === 2){ this.r[dst] = this.flag(this.hu[this.r[kilde]]); }
+      else { this.hu[this.r[dst]] = this.r[kilde]; }
+    }
+    else {
+      længde = 2;
+      const mål = næste();
+      if (op === 0) hop = mål;
+      else if (op === 1){ if (this.z) hop = mål; }
+      else if (op === 2){ if (!this.z) hop = mål; }
+      else {
+        længde = 1;
+        this.flag((((this.r[dst] - this.r[kilde]) % 256) + 256) % 256);
+      }
+    }
+
+    this.glimt += længde;
+    this.pc = hop !== null ? hop : (this.pc + længde) & 0xFF;
+    return this.kørende;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   5 · GRÆNSEFLADE
+   ══════════════════════════════════════════════════════════ */
+
+const EKSEMPLER = {
+hello:
+`; Skriver en streng ud, tegn for tegn.
+; Bemærk æ ø å: de ligger på 230, 248, 229 i det
+; udvidede tegnsaet og passer i ét glimt hver.
+
+    SET  C, tekst      ; C peger på strengen
+    SET  D, 1          ; skridtstørrelse
+løkke:
+    LOAD A, [C]        ; hent tegnet
+    JZ   slut          ; nul betyder enden
+    OUT  A             ; send det ud
+    ADD  C, D          ; ryk pegeren
+    JMP  løkke
+slut:
+    HALT
+
+tekst:
+    .tekst "Hej Janus! æøå i ét glimt hver.", 10, 0`,
+
+loop:
+`; Tæller ned fra 10 og skriver hvert tal.
+
+    SET  A, 10
+    SET  D, 1
+    SET  C, 32         ; mellemrum
+løkke:
+    EMIT A
+    OUT  C
+    SUB  A, D
+    JNZ  løkke
+    SET  B, 10         ; linjeskift
+    OUT  B
+    HALT`,
+
+math:
+`; 7 × 6, derefter minus 2.
+
+    SET  A, 7
+    SET  B, 6
+    MUL  A, B          ; A = 42
+    SET  C, 2
+    SUB  A, C          ; A = 40
+    EMIT A
+
+    SET  D, 10
+    OUT  D
+    HALT`,
+
+table:
+`; Gennemløber alle 256 kodepunkter fra 32 og op
+; og skriver dem ud. Hele tastaturet, ét glimt ad gangen.
+
+    SET  A, 32         ; første synlige tegn
+    SET  D, 1
+    SET  B, 127        ; stop her
+løkke:
+    OUT  A
+    ADD  A, D
+    CMP  A, B
+    JNZ  løkke
+    HALT`
+};
+
+const el = id => document.getElementById(id);
+const maskine = new Prisme();
+let program = [], mærker = {}, valgt = -1, kører = null;
+
+/* ── spektralbånd ────────────────────────────────────── */
+function tegnBånd(){
+  const strip = el('strip');
+  strip.innerHTML = '';
+  if (!program.length){
+    strip.innerHTML = '<div class="strip-empty">Oversæt et program for at se det som lysglimt.</div>';
+    el('stripInfo').textContent = 'tomt';
+    return;
+  }
+  el('stripInfo').textContent = `${program.length} glimt · ${program.length*8} bit nyttelast · ${program.length*10} bit i alt`;
+
+  program.forEach((b, i) => {
+    const s = kod(b);
+    const d = document.createElement('div');
+    d.className = 'flash' + (i === maskine.pc && maskine.kørende ? ' pc' : '') + (i === valgt ? ' sel' : '');
+    const bånd = document.createElement('div');
+    bånd.className = 'bands';
+    KANAL.forEach((k, j) => {
+      const bd = document.createElement('div');
+      bd.className = 'band' + (j === 4 ? ' uv' : '');
+      bd.style.background = k.farve;
+      bd.style.opacity = NIVEAU_ALFA[s[j]];
+      if (s[j] === 3 && j < 4) bd.style.boxShadow = `0 0 8px ${k.farve}`;
+      bånd.appendChild(bd);
+    });
+    d.appendChild(bånd);
+    const a = document.createElement('div');
+    a.className = 'addr';
+    a.textContent = i;
+    d.appendChild(a);
+    d.onclick = () => { valgt = i; tegnBånd(); vis(i); };
+    strip.appendChild(d);
+  });
+
+  const pc = strip.querySelector('.flash.pc');
+  if (pc) pc.scrollIntoView({block:'nearest', inline:'nearest'});
+}
+
+function vis(i){
+  const b = program[i], s = kod(b);
+  const ins = afkodInstruktion(b, program[i+1]);
+  const tegn = (b >= 32 && b !== 127) ? String.fromCharCode(b) : '·';
+  el('inspect').innerHTML =
+    `<div class="lead">Adresse ${i} — ${ins.tekst}</div>` +
+    `<div class="meta">` +
+    `<i>R</i> ${s[0]} &nbsp; <i>G</i> ${s[1]} &nbsp; <i>B</i> ${s[2]} &nbsp; <i>V</i> ${s[3]} &nbsp; <i>UV</i> ${s[4]} ` +
+    `&nbsp;·&nbsp; base 4 <i>${base4(b)}</i> &nbsp;·&nbsp; hex <i>${hex(b)}</i> ` +
+    `&nbsp;·&nbsp; decimal <i>${b}</i> &nbsp;·&nbsp; tegn <i>${tegn}</i>` +
+    `</div>`;
+}
+
+/* ── maskinvisning ───────────────────────────────────── */
+function tegnMaskine(){
+  ['A','B','C','D'].forEach((n, i) => {
+    el('r'+n).textContent = maskine.r[i];
+    el('q'+n).textContent = base4(maskine.r[i]);
+  });
+  el('stPc').textContent = maskine.pc;
+  el('stZ').textContent = maskine.z;
+  el('stCycles').textContent = maskine.glimt;
+  el('stBits').textContent = maskine.glimt * 10;
+  el('stState').textContent = maskine.kørende ? 'kører' : 'standset';
+
+  const k = el('konsol');
+  k.textContent = maskine.ud || '';
+  if (!maskine.ud) k.innerHTML = '<span class="note">Ingen udskrift endnu.</span>';
+  k.scrollTop = k.scrollHeight;
+}
+
+/* ── knapper ─────────────────────────────────────────── */
+function oversæt(){
+  stop();
+  const res = assembler(el('editor').value);
+  if (res.fejl.length){
+    el('konsol').innerHTML = res.fejl.map(f => `<span class="err">${f}</span>`).join('');
+    program = []; tegnBånd();
+    return false;
+  }
+  program = res.bytes; mærker = res.mærker; valgt = -1;
+  maskine.nulstil(program);
+  tegnBånd(); tegnMaskine();
+  el('konsol').innerHTML =
+    `<span class="note">Oversat. ${program.length} glimt · ${program.length*8} bit nyttelast · ` +
+    `${program.length*2} bit UV-kontrol · ${(program.length*10/8).toFixed(1)} byte optisk i alt.</span>`;
+  return true;
+}
+
+function stop(){ if (kører){ clearInterval(kører); kører = null; } }
+
+el('btnBuild').onclick = oversæt;
+
+el('btnStep').onclick = () => {
+  if (!program.length && !oversæt()) return;
+  maskine.trin();
+  tegnBånd(); tegnMaskine();
+};
+
+el('btnRun').onclick = () => {
+  if (kører){ stop(); tegnMaskine(); return; }
+  if (!program.length && !oversæt()) return;
+  if (!maskine.kørende) maskine.nulstil(program);
+  let vagt = 0;
+  kører = setInterval(() => {
+    for (let i = 0; i < 30; i++){
+      if (!maskine.trin() || ++vagt > 400000){ 
+        stop();
+        if (vagt > 400000) el('konsol').innerHTML += '<span class="err">Standset: for mange trin. Løkken slutter aldrig.</span>';
+        break;
+      }
+    }
+    tegnBånd(); tegnMaskine();
+  }, 16);
+};
+
+el('btnReset').onclick = () => {
+  stop(); maskine.nulstil(program); valgt = -1;
+  tegnBånd(); tegnMaskine();
+};
+
+el('samples').onchange = e => {
+  el('editor').value = EKSEMPLER[e.target.value];
+  oversæt();
+};
+
+/* ── tegnprøve ───────────────────────────────────────── */
+function prøve(v){
+  v = ((v % 256) + 256) % 256;
+  const s = kod(v);
+  el('probeStrip').innerHTML = '';
+  KANAL.forEach((k, j) => {
+    const c = document.createElement('div');
+    c.style.cssText = `flex:1;height:34px;border-radius:1px;background:${k.farve};opacity:${NIVEAU_ALFA[s[j]]}`;
+    if (j === 4){
+      c.style.background = 'transparent';
+      c.style.backgroundImage = `repeating-linear-gradient(135deg,${'var(--ch-uv)'} 0 2px,transparent 2px 4px)`;
+    }
+    c.title = `${k.navn} ${k.nm} nm — niveau ${s[j]}`;
+    el('probeStrip').appendChild(c);
+  });
+  el('probeMeta').innerHTML =
+    `base 4 <span style="color:#8892AB">${base4(v)}</span> &nbsp;·&nbsp; ` +
+    `hex <span style="color:#8892AB">${hex(v)}</span> &nbsp;·&nbsp; ` +
+    `UV <span style="color:#8892AB">${s[4]}</span> &nbsp;·&nbsp; ` +
+    `${v} = ${s[0]}·64 + ${s[1]}·16 + ${s[2]}·4 + ${s[3]}`;
+}
+el('probeChar').addEventListener('input', e => {
+  const c = e.target.value;
+  if (!c) return;
+  const v = c.codePointAt(0) & 0xFF;
+  el('probeNum').value = v;
+  prøve(v);
+});
+el('probeNum').addEventListener('input', e => {
+  const v = parseInt(e.target.value, 10);
+  if (isNaN(v)) return;
+  const n = ((v % 256) + 256) % 256;
+  el('probeChar').value = n >= 32 ? String.fromCharCode(n) : '';
+  prøve(n);
+});
+
+/* ── tabeller ────────────────────────────────────────── */
+(function(){
+  const rækker = [
+    [2,  '32',        '5',    '4 bit + kontrol'],
+    [4,  '1.024',     '10',   '8 bit + 2 kontrol'],
+    [8,  '32.768',    '15',   '12 bit + 3'],
+    [16, '1.048.576', '20',   '16 bit + 4']
+  ];
+  const tb = el('capTable').querySelector('tbody');
+  rækker.forEach(r => {
+    const tr = document.createElement('tr');
+    if (r[0] === 4) tr.className = 'hot';
+    tr.innerHTML = `<td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td>`;
+    tb.appendChild(tr);
+  });
+
+  const it = el('isaTable').querySelector('tbody');
+  for (const [m, d] of Object.entries(ISA)){
+    const tr = document.createElement('tr');
+    let form = '';
+    if (d[2] === 'r')  form = ' r';
+    if (d[2] === 'rr') form = ' d, s';
+    if (d[2] === 'ri') form = ' d, #n';
+    if (d[2] === 'rm') form = ' d, [s]';
+    if (d[2] === 'mr') form = ' [d], s';
+    if (d[2] === 'a')  form = ' adr';
+    tr.innerHTML = `<td>${d[0]}·${d[1]}</td><td style="color:var(--ink-bright)">${m}${form}</td><td>${d[4]}</td>`;
+    it.appendChild(tr);
+  }
+})();
+
+/* ── start ───────────────────────────────────────────── */
+el('editor').value = EKSEMPLER.hello;
+prøve(72);
+oversæt();
+</script>
 </body>
 </html>
