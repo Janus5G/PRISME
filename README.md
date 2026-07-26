@@ -23,8 +23,9 @@ Write assembly code, see each character as a light flash across five colour chan
 | Document | Audience | Download |
 |----------|----------|----------|
 | [Complete Guide](docs/PRISME_Komplet_Guide.docx) | Everyone -- 17 pages with shopping list and datacenter calculations | `.docx` (Google Docs compatible) |
-| [Hardware Schematic v2](docs/PRISME_v2_Hardwareskematik.docx) | Engineers / researchers -- 14 pages with component specifications | `.docx` (Google Docs compatible) |
-
+| [Hardware Schematic v2](docs/PRISME_v2_Hardwareskematik.docx) | Engineers / researchers -- 14 pages with component specifications | `.docx` (Google Docs 
+compatible) |
+| [University Validation Proposal](docs/PRISME_University_Validation_Proposal.docx) | DTU / university labs -- independent proof-of-concept protocol with testable hypotheses | `.docx` |
 ---
 
 ## What is PRISME?
