@@ -1,3 +1,5 @@
+![Tests](https://img.shields.io/badge/tests-41%20passed-brightgreen) ![License](https://img.shields.io/badge/license-MIT-blue) ![Channels](https://img.shields.io/badge/channels-R%20G%20B%20V%20UV-blueviolet) ![Bits](https://img.shields.io/badge/bits%2Fflash-10-green)
+
 # PRISME — Femkanals spektral datalagring
 
 > **Gem data i farvet lys.** Fem farver, fire styrker, ti bit per glimt.  
