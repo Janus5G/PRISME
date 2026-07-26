@@ -12,7 +12,7 @@
 
 ## Try it now
 
-**[Open the PRISME demo in your browser](https://Janus5G.github.io/PRISME/)** -- no installation, runs directly.
+[▶ Open the PRISME glass plate demo](https://janus5g.github.io/PRISME/demo/prisme.html)
 
 Write assembly code, see each character as a light flash across five colour channels, and run programs on the virtual machine. Everything runs locally in the browser.
 
