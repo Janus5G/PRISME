@@ -28,7 +28,7 @@ Du kan skrive assembly-kode, se hvert tegn som et lysglimt med fem farvekanaler,
 |----------|-----------|----------|
 | [Komplet Guide](docs/PRISME_Komplet_Guide.docx) | Alle — 17 sider med indkøbsliste og datacenter-regnestykke | `.docx` (Google Docs-kompatibel) |
 | [Hardwareskematik v2](docs/PRISME_v2_Hardwareskematik.docx) | Ingeniører / forskere — 14 sider med komponentspecifikationer | `.docx` (Google Docs-kompatibel) |
-
+| [Universitetsvalideringsforslag](docs/PRISME_University_Validation_Proposal.docx) | DTU / universitetslaboratorier -- uafhaengig proof-of-concept protokol med testbare hypoteser | `.docx` |
 ---
 
 ## Hvad er PRISME?
