@@ -19,6 +19,8 @@ Du kan skrive assembly-kode, se hvert tegn som et lysglimt med fem farvekanaler,
 
 > ⚠️ Opdater linket ovenfor med dit eget GitHub-brugernavn hvis det er et andet repo.  
 > Aktivér GitHub Pages: **Settings → Pages → Source: Deploy from a branch → Branch: main, /docs → Save**
+>
+> ![PRISME Encoder — tekst til lysglimt](assets/prisme-encoder-screenshot.png)
 
 ---
 
