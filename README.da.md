@@ -13,7 +13,7 @@
 
 ## ▶ Prøv det nu
 
-**[Åbn PRISME-demo i din browser](https://Janus5G.github.io/PRISME/)** — ingen installation, kører direkte.
+[▶ Åbn PRISME glasplade-demo](https://janus5g.github.io/PRISME/demo/prisme.html)
 
 Du kan skrive assembly-kode, se hvert tegn som et lysglimt med fem farvekanaler, og køre programmer på den virtuelle maskine. Alt foregår lokalt i browseren.
 
