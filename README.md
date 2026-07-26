@@ -1,50 +1,355 @@
-﻿# PRISME â€” Femkanals spektral datalagring
+# PRISME — Femkanals spektral datalagring
 
 > **Gem data i farvet lys.** Fem farver, fire styrker, ti bit per glimt.  
-> Den femte kanal er usynlig for Ã¸jet men fordobler fejlrettelsen.  
-> Pladen er glas, bruger nul strÃ¸m i hvile og holder i Ã¥rtusinder.
-
----
-
-## â–¶ PrÃ¸v det nu
-
-**[Ã…bn PRISME-demo i din browser](https://Janus5G.github.io/PRISME/)** â€” ingen installation, kÃ¸rer direkte.
-
-Du kan skrive assembly-kode, se hvert tegn som et lysglimt med fem farvekanaler, og kÃ¸re programmer pÃ¥ den virtuelle maskine. Alt foregÃ¥r lokalt i browseren.
-
-> âš ï¸ Opdater linket ovenfor med dit eget GitHub-brugernavn hvis det er et andet repo.  
-> AktivÃ©r GitHub Pages: **Settings â†’ Pages â†’ Source: Deploy from a branch â†’ Branch: main, /docs â†’ Save**
-
----
-
-## Dokumentation
-
-| Dokument | MÃ¥lgruppe | Download |
-|----------|-----------|----------|
-| [Komplet Guide](docs/PRISME_Komplet_Guide.docx) | Alle â€” 17 sider med indkÃ¸bsliste og datacenter-regnestykke | `.docx` (Google Docs-kompatibel) |
-| [Hardwareskematik v2](docs/PRISME_v2_Hardwareskematik.docx) | IngeniÃ¸rer / forskere â€” 14 sider med komponentspecifikationer | `.docx` (Google Docs-kompatibel) |
+> Den femte kanal er usynlig for øjet men fordobler fejlrettelsen.  
+> Pladen er glas, bruger nul strøm i hvile og holder i årtusinder.
 
 ---
 
 ## Hvad er PRISME?
 
-PRISME er et optisk datalagringssystem, der bruger fem bÃ¸lgelÃ¦ngder lys med fire intensitetsniveauer til at gemme data i glasplader. Hvor en CD bruger Ã©n laser med to tilstande (1 bit), bruger PRISME fem samtidige kanaler med fire trin â€” **10 bit per lysglimt**.
+PRISME er et optisk datalagringssystem, der bruger fem bølgelængder lys med fire intensitetsniveauer hver til at gemme data i glasplader. Hvor en CD bruger én laser med to tilstande (fordybning eller ej = 1 bit), bruger PRISME fem samtidige kanaler med fire trin hver — i alt **10 bit per lysglimt**.
 
-| Kanal | Farve | BÃ¸lgelÃ¦ngde | Rolle | Bit |
-|-------|-------|-------------|-------|-----|
-| R | RÃ¸d | 630 nm | Data (bit 7â€“6) | 2 |
-| G | GrÃ¸n | 530 nm | Data (bit 5â€“4) | 2 |
-| B | BlÃ¥ | 470 nm | Data (bit 3â€“2) | 2 |
-| V | Violet | 410 nm | Data (bit 1â€“0) | 2 |
-| UV | Ultraviolet | 405 nm | Fejlkontrol | 2 |
+| Kanal | Farve      | Bølgelængde | Rolle         | Bit  |
+|-------|------------|-------------|---------------|------|
+| R     | Rød        | 630 nm      | Data (bit 7–6)| 2    |
+| G     | Grøn       | 530 nm      | Data (bit 5–4)| 2    |
+| B     | Blå        | 470 nm      | Data (bit 3–2)| 2    |
+| V     | Violet     | 410 nm      | Data (bit 1–0)| 2    |
+| UV    | Ultraviolet| 405 nm      | Fejlkontrol   | 2    |
 
-Fire datakanaler Ã— 4 niveauer = **4â´ = 256 tilstande = 1 byte**. Hele tegnsÃ¦ttet i Ã©t glimt. UV-kanalen bÃ¦rer `(R+G+B+V) mod 4` og fordobler Reed-Solomon-fejlrettelsen.
+Fire datakanaler × 4 niveauer = **4⁴ = 256 tilstande = 1 byte**. Hele ASCII-tegnsættet i ét glimt. UV-kanalen bærer `(R+G+B+V) mod 4` og står helt fri til fejldetektion.
 
 ---
 
 ## Forbindelse til Chromaplex OS
 
-PRISME er det fysiske lag under [Chromaplex OS](https://github.com/search?q=chromaplex-os). Chromaplex definerer den abstrakte datastruktur â€” facetter, dybder, numeriske payloads. PRISME definerer, *hvordan* de data skrives og lÃ¦ses i glas:
+PRISME er det fysiske lag under [Chromaplex OS](https://github.com/search?q=chromaplex-os). Chromaplex OS definerer den abstrakte datastruktur — facetter, dybder, numeriske payloads. PRISME definerer, *hvordan* de data faktisk skrives og læses i et fysisk medium:
+
+```
+┌─────────────────────────────────────────────────┐
+│  Chromaplex OS v1/v2                            │
+│  Abstrakt: facetter, dybder, NPP-payloads       │
+│  Format: ChromaBridge numerisk protokol          │
+└────────────────────────┬────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────┐
+│  PRISME — spektral encoder                      │
+│  Oversætter bytes til fem-kanals lysglimt        │
+│  Tilføjer UV-kontrolsum og RS-fejlkodning        │
+│  Pakker i OPTB v1 binærformat med CRC32          │
+└────────────────────────┬────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────┐
+│  Fysisk medium                                  │
+│  5 buede dichroiske glasplader                   │
+│  4 × 100 µm luftspalter                         │
+│  Voxels med 1 µm afstand                        │
+│  Læsning: hvidt lys + 5 fotodioder              │
+│  Strøm i hvile: 0 W                             │
+└─────────────────────────────────────────────────┘
+```
+
+Chromaplex OS håndterer *hvad* der gemmes. PRISME håndterer *hvordan* det gemmes. Sammen udgør de en komplet pipeline fra brugerdata til fysisk arkiv.
+
+---
+
+## Repository-indhold
+
+```
+PRISME/
+├── README.md                          ← denne fil
+├── prisme.html                        ← assembler, encoder og VM (åbn i browser)
+├── PRISME_v2_Hardwareskematik.docx    ← teknisk dokument til forskere/ingeniører
+├── PRISME_Komplet_Guide.docx          ← komplet guide til alle (inkl. indkøbsliste)
+├── start-ors.bat                      ← starter simulatoren på Windows
+└── optical-routing-simulator/         ← fysik- og compiler-simulator (Python/FastAPI)
+    ├── pyproject.toml
+    ├── src/optical_router/
+    │   ├── physics.py                 ← Sellmeier-dispersion, Arrhenius-holdbarhed
+    │   ├── compiler.py                ← OPTB v1 binær-compiler med CRC32
+    │   ├── api.py                     ← FastAPI med /simulate/write og /stream
+    │   ├── constants.py               ← fysiske konstanter
+    │   ├── models.py                  ← datamodeller
+    │   ├── service.py                 ← forretningslogik
+    │   └── static/
+    │       ├── index.html             ← dashboard med PRISME-encoder
+    │       └── prisme.html            ← assembler (også tilgængelig via /prisme)
+    └── tests/                         ← 19 tests (physics, compiler, API)
+```
+
+---
+
+## Hurtig start
+
+### 1. Prøv PRISME-encoderen nu (ingen installation)
+
+Åbn `prisme.html` direkte i din browser. Den kører lokalt — ingen server, ingen afhængigheder. Du kan:
+
+- Skrive assembly-kode og se den som lysglimt
+- Klikke på hvert glimt for at se dets fem kanaler
+- Skrive et tegn og se dets farvekodning
+- Køre programmer på den virtuelle maskine
+
+### 2. Kør den fulde simulator (kræver Python)
+
+**Windows (dobbeltklik):**
+Læg `start-ors.bat` i mappen `optical-routing-simulator/` og dobbeltklik.
+
+**Linux / macOS / WSL:**
+```bash
+cd optical-routing-simulator
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+python3 -m optical_router --reload
+```
+
+Åbn `http://127.0.0.1:8000` — dashboard med PRISME-encoder, skrivevalidering og binær-compiler.
+Åbn `http://127.0.0.1:8000/prisme` — assembler og VM.
+
+### 3. Læs dokumentationen
+
+| Dokument | Målgruppe | Indhold |
+|----------|-----------|---------|
+| `PRISME_Komplet_Guide.docx` | Alle | 17 sider. Hvad, hvorfor, hvordan. Indkøbsliste. Datacenter-regnestykke. |
+| `PRISME_v2_Hardwareskematik.docx` | Ingeniører / forskere | 14 sider. Komponentspecifikationer, Pi 5-tilslutninger, faseplan. |
+
+Begge kan importeres i Google Docs og eksporteres til PDF.
+
+---
+
+## Kodningssystemet
+
+### Byte til lysglimt
+
+Enhver byte (0–255) kodes som fire kvaternære cifre plus en kontrolsum:
+
+```
+Byte 72 ("H"):
+
+  72 ÷ 64 = 1 rest 8    →  R = 1 (svag)
+   8 ÷ 16 = 0 rest 8    →  G = 0 (slukket)
+   8 ÷  4 = 2 rest 0    →  B = 2 (medium)
+   0                     →  V = 0 (slukket)
+   (1+0+2+0) mod 4 = 3  →  UV = 3 (fuld)
+
+Base-4: 1020  |  Hex: 48  |  UV-check: 3
+```
+
+### Kapacitet
+
+| Niveauer/kanal | Tilstande | Bit/glimt | Nyttelast       | SNR-krav |
+|---------------|-----------|-----------|-----------------|----------|
+| 2 (som CD)    | 32        | 5         | 4 bit + kontrol | ~6 dB    |
+| **4 (PRISME)**| **1.024** | **10**    | **8 bit + 2**   | **~12 dB** |
+| 8             | 32.768    | 15        | 12 bit + 3      | ~18 dB   |
+| 16            | 1.048.576 | 20        | 16 bit + 4      | ~24 dB   |
+
+Fire niveauer er det optimale punkt — gevinsten er størst, fejlraten stadig lav.
+
+### UV-kanalen og Reed-Solomon
+
+UV-kanalen opdager korrupte symboler og markerer dem som **udslettelser**. Reed-Solomon kan rette dobbelt så mange udslettelser som ukendte fejl med den samme mængde paritet. Den "spildte" femte kanal **fordobler fejlrettelseskapaciteten**.
+
+Med RS(255,223) per blok: 16 paritetssymboler retter 16 fejl *eller* 32 udslettelser. UV-markering konverterer ukendte fejl til kendte udslettelser, så den effektive rettelseskapacitet er op til 32 symboler per blok.
+
+---
+
+## Fysisk design
+
+### Pladestabel
+
+```
+    Hvidt lys ind
+         ↓
+┌──────────────────────────┐
+│  Plade 1: RØD dichroisk  │  0,5 mm borosilicat
+└──────────────────────────┘
+      ~~~ 100 µm luft ~~~
+┌──────────────────────────┐
+│  Plade 2: GRØN dichroisk │  0,5 mm borosilicat
+└──────────────────────────┘
+      ~~~ 100 µm luft ~~~
+┌──────────────────────────┐
+│  Plade 3: BLÅ dichroisk  │  0,5 mm borosilicat
+└──────────────────────────┘
+      ~~~ 100 µm luft ~~~
+┌──────────────────────────┐
+│  Plade 4: VIOLET dichroisk│ 0,5 mm borosilicat
+└──────────────────────────┘
+      ~~~ 100 µm luft ~~~
+┌──────────────────────────┐
+│  Plade 5: UV-absorbent   │  0,5 mm borosilicat
+└──────────────────────────┘
+         ↓
+   5 fotodioder med
+   båndpasfiltre måler
+   intensiteten per kanal
+```
+
+Total højde: ~3 mm. Pladerne er let buede (radius ~500 mm) for at holde lyset stabilt i kaviteten (Fabry-Pérot-princippet).
+
+### Skrivning
+
+Laser ændrer pladens lokale transmittans. Fire effektniveauer via DAC giver fire transmittanstrin:
+
+| Niveau | Transmittans | Beskrivelse |
+|--------|-------------|-------------|
+| 0 | ~100% | Helt gennemsigtigt (ubelyst) |
+| 1 | ~66% | Svag dæmpning |
+| 2 | ~33% | Medium dæmpning |
+| 3 | ~5% | Næsten opak |
+
+**Prototype:** UV-belysning af SU-8 fotoresist (dosisafhængig). **Permanent:** Femtosekundlaser i fused silica (Type II nanogitre, holdbarhed >10²⁰ år).
+
+### Læsning
+
+Hvidt lys (eller 5 LED'er) ind fra toppen. 5 fotodioder med 10 nm båndpasfiltre i bunden. Én eksponering, alle kanaler simultant. Ingen bevægelige dele.
+
+### Tæthed
+
+| Parameter | Værdi |
+|-----------|-------|
+| Voxelafstand | 1 µm |
+| Voxels per cm² | 10⁸ |
+| Bit per voxel | 8 (4 kanaler × 2 bit) |
+| **Kapacitet per cm²** | **100 MB** |
+| Plade 10×10 mm | 100 MB |
+| Plade 12 cm Ø (CD-størrelse) | ~10 GB |
+
+---
+
+## Strømforbrug og datacenter-besparelse
+
+### Per enhed
+
+| Tilstand | PRISME | SSD | HDD |
+|----------|--------|-----|-----|
+| Hvile | **0 W** | 0,5–1 W | 5–8 W |
+| Læsning | <1 W | 2–5 W | 6–8 W |
+| Skrivning | ~3 W | 2–5 W | 6–8 W |
+| Holdbarhed | 1.000+ år | 5–10 år | 3–5 år |
+
+### 10 PB koldt arkiv — årligt regnestykke
+
+| Post | HDD (500 diske × 20 TB) | PRISME |
+|------|-------------------------|--------|
+| IT-strøm (hvile) | 500 × 5 W = 2.500 W | 0 W |
+| Inkl. køling (PUE 1,4) | 3.500 W | 0 W |
+| Energi per år | 30.660 kWh | 0 kWh |
+| **Eludgift per år** | **45.990 kr.** | **0 kr.** |
+| CO₂ per år | ~4,9 ton | 0 ton |
+| Hardware-udskiftning (per 5 år) | 1.250.000 kr. | 0 kr. |
+| **10-års totalomkostning** | **~2.960.000 kr.** | **Engangskost ved skrivning** |
+
+---
+
+## Instruktionssæt (PRISME-assembler)
+
+Assembleren i `prisme.html` implementerer et komplet instruktionssæt, hvor opkode og operander er kodet i de fire synlige kanaler:
+
+```
+Byte = Klasse(R) | Operation(G) | Destination(B) | Kilde(V)
+       bit 7–6      bit 5–4        bit 3–2          bit 1–0
+```
+
+| R·G | Instruktion | Virkning |
+|-----|-------------|----------|
+| 0·0 | NOP | Gør intet |
+| 0·1 | HALT | Standser maskinen |
+| 0·2 | OUT r | Udskriver register som tegn |
+| 0·3 | EMIT r | Udskriver register som tal |
+| 1·0 | ADD d, s | d = d + s |
+| 1·1 | SUB d, s | d = d − s |
+| 1·2 | MUL d, s | d = d × s |
+| 1·3 | XOR d, s | d = d ⊻ s |
+| 2·0 | SET d, #n | d = konstant (næste glimt) |
+| 2·1 | MOV d, s | d = s |
+| 2·2 | LOAD d, [s] | d = hukommelse[s] |
+| 2·3 | STORE [d], s | hukommelse[d] = s |
+| 3·0 | JMP adr | Spring til adresse |
+| 3·1 | JZ adr | Spring hvis nulflag |
+| 3·2 | JNZ adr | Spring hvis ikke nulflag |
+| 3·3 | CMP d, s | Sammenlign, sæt nulflag |
+
+4 registre (A, B, C, D), 256 bytes hukommelse. En hel instruktion ankommer som ét lysglimt.
+
+---
+
+## Fysik-simulator (optical-routing-simulator)
+
+Simulatoren validerer den fysiske virkelighed bag PRISME:
+
+| Modul | Hvad det beregner |
+|-------|-------------------|
+| `physics.py` | Sellmeier-dispersion (brydningsindeks per bølgelængde), sfærisk aberration ved dybdeskrivning, Arrhenius-holdbarhed for Type II nanogitre, Gauss peak-intensitet |
+| `compiler.py` | Kvantisering af optiske tilstande, pakning i OPTB v1 binærformat med CRC32, timing for transmissionslinje (propagation, dispersion, sensor-bottleneck) |
+| `api.py` | FastAPI: `/simulate/write` (skrive-validering), `/simulate/stream` (binær-kompilering) |
+
+### Verificerede PRISME-kanalindeks (Sellmeier)
+
+| Kanal | Tabuleret | Beregnet | Afvigelse |
+|-------|----------|----------|-----------|
+| R 630 nm | 1,4580 | 1,4571 | 0,06% |
+| G 530 nm | 1,4613 | 1,4608 | 0,03% |
+| B 470 nm | 1,4650 | 1,4641 | 0,06% |
+| V 410 nm | 1,4701 | 1,4691 | 0,07% |
+| UV 405 nm | 1,4706 | 1,4696 | 0,07% |
+
+### Type II skrivning ved 405 nm
+
+Simuleret med 0.55 NA, 500 nJ pulser, 300 fs:
+
+- Effektiv intensitet: 25,49 TW/cm² (over 10 TW/cm² tærskel → Type II)
+- Holdbarhed: 10²¹·⁵ år (nedre grænse 10²⁰·³ år)
+- Voxelform: 0,45 µm lateralt × 81,2 µm aksialt
+
+---
+
+## Faseplan
+
+| Fase | Mål | Budget | Tidsramme |
+|------|-----|--------|-----------|
+| 1 — Bevis | 100 bytes, 4 niveauer, UV-check, manuel positionering | ~7.000 kr. | 2–3 måneder |
+| 2 — Automatisering | 10.000+ voxels, piezostage, kamera-læsning | ~25.000–40.000 kr. | 3–6 måneder |
+| 3 — Permanent medium | Femtosekundskrivning i fused silica | ~100.000–250.000 kr. | 6–12 måneder |
+| 4 — Rack-produktion | 20 enheder, netværk, sharding | ~500.000+ kr. | 12+ måneder |
+
+Fase 3 kræver adgang til femtosekundlaser — et samarbejde med DTU Fotonik eller tilsvarende institution er den oplagte vej.
+
+---
+
+## Kendte begrænsninger og åbne spørgsmål
+
+**Niveaudrift.** Fire niveauer i fotoresist driver over tid. Kalibreringsstribe på pladen + adaptiv kvantisering i software løser det. I fused silica (fase 3) er problemet elimineret — nanogitre er strukturelle, ikke kemiske.
+
+**Krydsoverhøring.** Dichroiske filtre har endelig skarphed. Rød kan lække ind i grøn. Løsning: kanalmatrice i software (samme teknik som mobilkameraer bruger).
+
+**Hastighed.** Prototype: sekunder per voxel. Galvospejle: ~100.000 voxels/s. Femtosekundlaser: ~1.000.000 voxels/s. For koldt arkiv er hastighed sekundært.
+
+**Skalering.** Prototypen beviser fysikken. Skalering til gigabytes kræver præcisions-optomekanik, parallel læsning med kamera, og 1–2 års dedikeret ingeniørindsats.
+
+---
+
+## Relaterede repositories
+
+- [chromaplex-os-compiler](https://github.com/search?q=chromaplex-os-compiler) — Chromaplex OS compiler
+- [Cplex](https://github.com/search?q=Cplex+chromaplex) — Chromaplex kernebibliotek
+- [chromaplex-os-v2](https://github.com/search?q=chromaplex-os-v2) — Chromaplex OS version 2
+- [ChromaBridge](https://github.com/search?q=ChromaBridge) — Web3 datamigrations-pipeline med NPP (Numeric Payload Protocol)
+
+---
+
+## Licens
+
+Se de individuelle filer for licensbetingelser.
+
+---
+
+*PRISME — Gem data i farvet lys — Juli 2026*
 
 ```
 â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
