@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#03060a">
+    <title>Refract3 · PRISME Glasplade-register</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #03060a;
+            --panel: rgba(7, 11, 18, 0.82);
+            --panel-solid: #0b1019;
+            --border: rgba(96, 114, 142, 0.38);
+            --text: #d8dee9;
+            --muted: #778398;
+            --cyan: #67d8e7;
+            --green: #55dda0;
+            --red: #ff4a3d;
+            --blue: #4695ff;
+            --violet: #8d63ff;
+            --uv: #d5c9ff;
+        }
+
+        * { box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 50% 25%, rgba(24, 43, 92, 0.35), transparent 45rem),
+                var(--bg);
+            color: var(--text);
+            font-family: "Courier New", Courier, monospace;
+        }
+
+        button, input { font: inherit; }
+        button { cursor: pointer; }
+
+        #canvas-container {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+        }
+
+        #canvas-container canvas { display: block; }
+
+        .panel {
+            position: fixed;
+            z-index: 10;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            background: var(--panel);
+            box-shadow: 0 16px 50px rgba(0, 0, 0, 0.46), inset 0 1px rgba(255,255,255,.035);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        #ui-overlay {
+            top: 20px;
+            left: 20px;
+            width: min(420px, calc(100vw - 40px));
+            padding: 19px;
+        }
+
+        #channel-overlay {
+            top: 20px;
+            right: 20px;
+            width: min(330px, calc(100vw - 40px));
+            padding: 17px;
+        }
+
+        #registry-log {
+            right: 20px;
+            bottom: 20px;
+            width: min(410px, calc(100vw - 40px));
+            max-height: 226px;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .eyebrow {
+            margin: 0 0 8px;
+            color: #8da1c0;
+            font-size: .67rem;
+            font-weight: bold;
+            letter-spacing: .16em;
+        }
+
+        h1, h2 {
+            margin: 0;
+            color: #f5f7fb;
+            letter-spacing: .04em;
+        }
+
+        h1 { font-size: 1.15rem; }
+        h2 { font-size: .76rem; text-transform: uppercase; letter-spacing: .12em; }
+
+        .intro {
+            margin: 8px 0 15px;
+            color: #8b96a8;
+            font-size: .73rem;
+            line-height: 1.55;
+        }
+
+        .registry-state {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            margin: 0 -19px 15px;
+            border-block: 1px solid var(--border);
+            background: var(--border);
+        }
+
+        .registry-state div {
+            padding: 10px 19px;
+            background: rgba(10, 15, 24, .94);
+        }
+
+        .registry-state span {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--muted);
+            font-size: .58rem;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .registry-state strong { color: #eef2f8; font-size: .76rem; font-weight: normal; }
+        .registry-state .live { color: var(--green); }
+        .registry-state .offline { color: #f4a179; }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            color: #8d99ab;
+            font-size: .61rem;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .input-row { display: flex; }
+
+        #payload-input {
+            min-width: 0;
+            flex: 1;
+            padding: 10px 11px;
+            outline: 0;
+            border: 1px solid #354159;
+            border-right: 0;
+            border-radius: 5px 0 0 5px;
+            background: #050810;
+            color: #fff;
+        }
+
+        #payload-input:focus { border-color: #6387b8; box-shadow: inset 0 0 0 1px #6387b8; }
+
+        #toggle-animation {
+            min-width: 78px;
+            border: 1px solid #405574;
+            border-radius: 0 5px 5px 0;
+            background: #182338;
+            color: #c1d4ef;
+            font-size: .68rem;
+        }
+
+        .address-card {
+            margin-top: 13px;
+            padding: 11px 12px;
+            border: 1px solid #2b3547;
+            border-radius: 5px;
+            background: rgba(4, 7, 13, .8);
+        }
+
+        .address-card span {
+            color: var(--muted);
+            font-size: .57rem;
+            letter-spacing: .09em;
+            text-transform: uppercase;
+        }
+
+        #registry-address {
+            margin: 6px 0 0;
+            color: #c7d6ed;
+            font-size: .78rem;
+            line-height: 1.45;
+            word-break: break-all;
+        }
+
+        #registry-meta { margin: 6px 0 0; color: #6f7b8d; font-size: .61rem; }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 13px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(96,114,142,.24);
+        }
+
+        .panel-title a {
+            color: #8eb8f6;
+            font-size: .59rem;
+            text-decoration: none;
+        }
+
+        .channel {
+            display: grid;
+            grid-template-columns: 30px 1fr 58px 18px;
+            align-items: center;
+            gap: 8px;
+            min-height: 33px;
+        }
+
+        .channel b { font-size: .7rem; }
+        .channel small { color: #687386; font-size: .55rem; }
+
+        .meter {
+            height: 4px;
+            overflow: hidden;
+            border-radius: 3px;
+            background: #202735;
+        }
+
+        .meter i {
+            display: block;
+            width: 0;
+            height: 100%;
+            background: currentColor;
+            box-shadow: 0 0 8px currentColor;
+            transition: width .32s ease;
+        }
+
+        .channel em { color: #b9c1cd; font-size: .65rem; font-style: normal; text-align: right; }
+        .channel.red { color: var(--red); }
+        .channel.green { color: var(--green); }
+        .channel.blue { color: var(--blue); }
+        .channel.violet { color: var(--violet); }
+        .channel.uv { color: var(--uv); }
+
+        .encoding {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            margin: 12px -17px -17px;
+            border-top: 1px solid var(--border);
+            background: var(--border);
+        }
+
+        .encoding div { padding: 10px 17px; background: rgba(10,15,24,.96); }
+        .encoding span { display: block; color: var(--muted); font-size: .55rem; text-transform: uppercase; }
+        .encoding strong { display: block; margin-top: 4px; color: #e9edf4; font-size: .73rem; font-weight: normal; }
+
+        .log-header { margin-bottom: 10px; color: var(--cyan); font-size: .68rem; font-weight: bold; letter-spacing: .08em; }
+        .log-entry {
+            margin-bottom: 8px;
+            padding-left: 8px;
+            border-left: 2px solid #52637d;
+            color: #a7b0bf;
+            font-size: .66rem;
+            line-height: 1.45;
+        }
+        .log-entry strong { color: #e4e8ef; }
+        .log-entry span { color: #667286; }
+
+        #stage-caption {
+            position: fixed;
+            z-index: 4;
+            left: 50%;
+            bottom: 22px;
+            transform: translateX(-50%);
+            padding: 7px 10px;
+            border: 1px solid rgba(98, 121, 154, .3);
+            border-radius: 99px;
+            background: rgba(3, 6, 10, .58);
+            color: #8b96a8;
+            font-size: .58rem;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            pointer-events: none;
+        }
+
+        @media (max-width: 850px) {
+            #ui-overlay { top: 10px; left: 10px; width: calc(100vw - 20px); padding: 14px; }
+            #channel-overlay { top: auto; right: 10px; bottom: 158px; width: calc(100vw - 20px); padding: 12px; }
+            #registry-log { right: 10px; bottom: 10px; width: calc(100vw - 20px); max-height: 136px; }
+            .intro { display: none; }
+            .registry-state { margin-inline: -14px; }
+            .registry-state div { padding-inline: 14px; }
+            .address-card { margin-top: 9px; }
+            .channel { min-height: 25px; }
+            .encoding { display: none; }
+            #stage-caption { display: none; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { transition-duration: .01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container" aria-hidden="true"></div>
+
+    <section id="ui-overlay" class="panel" aria-label="PRISME registerstatus">
+        <p class="eyebrow">CHROMAPLEX OS V2 / PRISME</p>
+        <h1>GLASPLADE-REGISTER</h1>
+        <p class="intro">Fem dichroiske glasplader visualiserer den næste ledige koordinat fra det levende ChromaPlex-register.</p>
+
+        <div class="registry-state">
+            <div><span>Datakilde</span><strong id="source-state">Forbinder…</strong></div>
+            <div><span>Aktiv byte</span><strong id="active-byte">0x50 · 80</strong></div>
+        </div>
+
+        <label for="payload-input">Tekst til PRISME-lysglimt</label>
+        <div class="input-row">
+            <input id="payload-input" value="PRISME" maxlength="24" autocomplete="off" spellcheck="false">
+            <button id="toggle-animation" type="button">Pause</button>
+        </div>
+
+        <div class="address-card">
+            <span>Næste ledige registeradresse</span>
+            <p id="registry-address">Scanner registry…</p>
+            <p id="registry-meta">Internet Computer · afventer svar</p>
+        </div>
+    </section>
+
+    <aside id="channel-overlay" class="panel" aria-label="PRISME kanalniveauer">
+        <div class="panel-title">
+            <h2>Kanalniveauer</h2>
+            <a href="https://github.com/Janus5G/PRISME" target="_blank" rel="noopener noreferrer">PRISME ↗</a>
+        </div>
+
+        <div class="channel red"><b>R</b><small>630 nm · bit 7–6</small><div class="meter"><i id="meter-r"></i></div><em id="level-r">1</em></div>
+        <div class="channel green"><b>G</b><small>530 nm · bit 5–4</small><div class="meter"><i id="meter-g"></i></div><em id="level-g">1</em></div>
+        <div class="channel blue"><b>B</b><small>470 nm · bit 3–2</small><div class="meter"><i id="meter-b"></i></div><em id="level-b">0</em></div>
+        <div class="channel violet"><b>V</b><small>410 nm · bit 1–0</small><div class="meter"><i id="meter-v"></i></div><em id="level-v">0</em></div>
+        <div class="channel uv"><b>UV</b><small>405 nm · checksum</small><div class="meter"><i id="meter-uv"></i></div><em id="level-uv">2</em></div>
+
+        <div class="encoding">
+            <div><span>Base-4</span><strong id="base4-value">1100</strong></div>
+            <div><span>Kapacitet</span><strong>10 bit / glimt</strong></div>
+        </div>
+    </aside>
+
+    <section id="registry-log" class="panel" aria-label="Registerlog">
+        <div class="log-header">◈ LIVE REGISTER / OPTISK LEDGER</div>
+        <div id="log-entries"></div>
+    </section>
+
+    <div id="stage-caption">5 glasplader · 4 intensitetsniveauer · UV-fejlkontrol</div>
+
+    <script type="module" src="./app.js?v=prisme-glass-registry-2"></script>
+</body>
+</html>
