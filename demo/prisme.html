@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="da">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#03060a">
-    <title>Refract3 · PRISME Glasplade-register</title>
+    <title>Refract3 · PRISME Glass-Plate Register</title>
     <style>
         :root {
             color-scheme: dark;
@@ -322,17 +322,17 @@
 <body>
     <div id="canvas-container" aria-hidden="true"></div>
 
-    <section id="ui-overlay" class="panel" aria-label="PRISME demonstrationsstatus">
+    <section id="ui-overlay" class="panel" aria-label="PRISME demonstration status">
         <p class="eyebrow">CHROMAPLEX OS V2 / PRISME</p>
-        <h1>GLASPLADE-DEMO</h1>
-        <p class="intro">Fem dichroiske glasplader visualiserer spektral bytekodning, mens otte bytes samles til et logisk 64-bit ord.</p>
+        <h1>GLASS-PLATE REGISTER</h1>
+        <p class="intro">Five dichroic glass plates visualise spectral byte encoding while eight bytes are assembled into one logical 64-bit word.</p>
 
         <div class="registry-state">
-            <div><span>Datakilde</span><strong id="source-state">Forbinder…</strong></div>
-            <div><span>Aktiv byte</span><strong id="active-byte">0x50 · 80</strong></div>
+            <div><span>Data source</span><strong id="source-state">Connecting…</strong></div>
+            <div><span>Active byte</span><strong id="active-byte">0x50 · 80</strong></div>
         </div>
 
-        <label for="payload-input">Tekst til PRISME-lysglimt</label>
+        <label for="payload-input">Text for PRISME light flashes</label>
         <div class="input-row">
             <input id="payload-input" value="PRISME" maxlength="24" autocomplete="off" spellcheck="false">
             <button id="toggle-animation" type="button">Pause</button>
@@ -340,8 +340,8 @@
 
         <div class="address-card">
             <span>Live wallet</span>
-            <p id="registry-address">Kontrollerer ChromaPlex Wallet…</p>
-            <p id="registry-meta">Offentlig demo · private data forbliver i wallet</p>
+            <p id="registry-address">Checking ChromaPlex Wallet…</p>
+            <p id="registry-meta">Public demo · private data remain in the wallet</p>
         </div>
 
         <p class="scaling-note-link">
@@ -350,14 +350,18 @@
                 target="_blank"
                 rel="noopener noreferrer"
             >
-                Læs teknisk note om fysisk opskalering ↗
+                Read the technical note on physical scaling ↗
+            </a>
+            <br>
+            <a href="./prisme-da.html">
+                Dansk version med skaleringsnote ↗
             </a>
         </p>
     </section>
 
-    <aside id="channel-overlay" class="panel" aria-label="PRISME kanalniveauer">
+    <aside id="channel-overlay" class="panel" aria-label="PRISME channel levels">
         <div class="panel-title">
-            <h2>Kanalniveauer</h2>
+            <h2>Channel levels</h2>
             <a href="https://github.com/Janus5G/PRISME" target="_blank" rel="noopener noreferrer">PRISME ↗</a>
         </div>
 
@@ -369,19 +373,19 @@
 
         <div class="encoding">
             <div><span>Base-4</span><strong id="base4-value">1100</strong></div>
-            <div><span>Spektralt glimt</span><strong>8 data + 2 kontrol</strong></div>
-            <div class="wide"><span>64-bit binært ord · 8 UTF-8-bytes</span><strong id="word64-value">0x505249534D450000</strong></div>
-            <div><span>Logisk adressering</span><strong>64-bit</strong></div>
-            <div><span>Teoretisk adresserum</span><strong>2^64 adresser</strong></div>
+            <div><span>Spectral flash</span><strong>8 data + 2 control</strong></div>
+            <div class="wide"><span>64-bit binary word · 8 UTF-8 bytes</span><strong id="word64-value">0x505249534D450000</strong></div>
+            <div><span>Logical addressing</span><strong>64-bit</strong></div>
+            <div><span>Theoretical address space</span><strong>2^64 addresses</strong></div>
         </div>
     </aside>
-<section id="registry-log" class="panel" aria-label="Registerlog">
-        <div class="log-header">◈ PRISME 64-BIT / OPTISK KODNING</div>
+<section id="registry-log" class="panel" aria-label="Registry log">
+        <div class="log-header">◈ PRISME 64-BIT / OPTICAL ENCODING</div>
         <div id="log-entries"></div>
     </section>
 
-    <div id="stage-caption">5 glasplader · 8 bytes pr. 64-bit ord · UV-fejlkontrol</div>
+    <div id="stage-caption">5 glass plates · 8 bytes per 64-bit word · UV error control</div>
 
-    <script type="module" src="./app.js?v=prisme-public-demo-final-1"></script>
+    <script type="module" src="./app.js?v=prisme-english-language-link-1"></script>
 </body>
 </html>
