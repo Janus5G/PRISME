@@ -6,9 +6,9 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.module.js';
 import { Actor, HttpAgent } from 'https://esm.sh/@dfinity/agent@3.4.3';
 
-const CANISTER_ID = '22w4c-cyaaa-aaaab-qacka-cai';
+const CANISTER_ID = '2acgr-4qaaa-aaaan-q6lra-cai';
 const IC_HOST = 'https://icp0.io';
-const REGISTRY_URL = 'https://chromaplex-ecosystem-77e.caffeine.xyz/registry?q=&colors=%5B%5D';
+const REGISTRY_URL = 'https://chromaplex-wallet-sgm.caffeine.xyz/entries';
 
 const CHANNELS = [
     { key: 'R', name: 'RED', nm: 630, color: 0xff4a3d },
@@ -18,15 +18,6 @@ const CHANNELS = [
     { key: 'UV', name: 'UV', nm: 405, color: 0xd5c9ff }
 ];
 
-const CRYSTALS = [
-    { id: 1n, label: 'CHR-001', permanent: false, facetEnd: 4 },
-    { id: 2n, label: 'CHR-002', permanent: false, facetEnd: 4 },
-    { id: 3n, label: 'CHR-003', permanent: false, facetEnd: 4 },
-    { id: 4n, label: 'CHR-004', permanent: false, facetEnd: 4 },
-    { id: 0n, label: 'CHR-CORE', permanent: true, facetEnd: 3 }
-];
-const REGISTRY_COLORS = ['RED', 'GREEN', 'BLUE', 'UV', 'IR'];
-const DEPTHS = [0n, 1n, 2n];
 
 const container = document.getElementById('canvas-container');
 const payloadInput = document.getElementById('payload-input');
@@ -37,6 +28,7 @@ const addressDisplay = document.getElementById('registry-address');
 const registryMeta = document.getElementById('registry-meta');
 const logEntries = document.getElementById('log-entries');
 const base4Value = document.getElementById('base4-value');
+const word64Value = document.getElementById('word64-value');
 
 const meterElements = CHANNELS.map((channel) => document.getElementById(`meter-${channel.key.toLowerCase()}`));
 const levelElements = CHANNELS.map((channel) => document.getElementById(`level-${channel.key.toLowerCase()}`));
@@ -66,9 +58,19 @@ function currentCharacter() {
     return message[messageIndex % message.length] || ' ';
 }
 
-function formatCoordinate(facet) {
-    return `${facet.crystalLabel} #${facet.facetIndex} ${facet.color} d${facet.depth}`;
+const utf8Encoder = new TextEncoder();
+
+function encode64BitWord(text) {
+    const bytes = utf8Encoder.encode(text || ' ');
+    let word = 0n;
+
+    for (let index = 0; index < 8; index += 1) {
+        word = (word << 8n) | BigInt(bytes[index] ?? 0);
+    }
+
+    return `0x${word.toString(16).padStart(16, '0').toUpperCase()}`;
 }
+
 
 function addLog(title, detail, color = '#52637d') {
     const entry = document.createElement('div');
@@ -87,118 +89,96 @@ function addLog(title, detail, color = '#52637d') {
 }
 
 // --------------------------------------------------------------
-// Live registry reader. The public registry page uses this same
-// canister and lens_capture query to sweep its coordinate grid.
+// Live PRISME registry reader.
+// Reads the existing entries from the live ChromaPlex backend.
+// It does not scan or construct 57-facet crystal coordinates.
 // --------------------------------------------------------------
 const idlFactory = ({ IDL: Candid }) => {
-    const LensCaptureArgs = Candid.Record({
-        crystalId: Candid.Nat,
-        facet: Candid.Text
+    const Entry = Candid.Record({
+        base: Candid.Nat,
+        exponent: Candid.Nat,
+        extraction_hash: Candid.Text,
+        ledger_proof: Candid.Vec(Candid.Text),
+        metadata_algorithm: Candid.Text,
+        metadata_encrypted: Candid.Vec(Candid.Text),
+        metadata_key_id: Candid.Vec(Candid.Text),
+        owner: Candid.Principal,
+        payload_id: Candid.Text,
+        received_at: Candid.Int,
+        rest: Candid.Nat,
+        source_address: Candid.Text,
+        value: Candid.Nat,
+        verified: Candid.Bool
     });
-    const CrystalCapture = Candid.Record({
-        crystalId: Candid.Nat,
-        capturedAt: Candid.Nat,
-        facet: Candid.Text
+    const Balance = Candid.Record({
+        entry_count: Candid.Nat,
+        total_value: Candid.Nat
     });
     return Candid.Service({
-        lens_capture: Candid.Func([LensCaptureArgs], [CrystalCapture], []),
-        get_system_state: Candid.Func([], [Candid.Nat, Candid.Nat], ['query']),
-        get_total_capacity: Candid.Func([], [Candid.Nat], ['query'])
+        list_entries: Candid.Func([], [Candid.Vec(Entry)], ['query']),
+        balance: Candid.Func([], [Balance], ['query'])
     });
 };
 
 const agent = HttpAgent.createSync({ host: IC_HOST });
 const registryActor = Actor.createActor(idlFactory, { agent, canisterId: CANISTER_ID });
 
-function registryCoordinates() {
-    const coordinates = [];
-    for (const crystal of CRYSTALS) {
-        for (let facetIndex = 0; facetIndex < crystal.facetEnd; facetIndex += 1) {
-            for (const color of REGISTRY_COLORS) {
-                for (const depth of DEPTHS) {
-                    coordinates.push({
-                        crystalId: crystal.id,
-                        crystalLabel: crystal.label,
-                        permanent: crystal.permanent,
-                        facetIndex,
-                        color,
-                        depth,
-                        facet: `f${facetIndex}-${color}-d${depth}`
-                    });
-                }
-            }
-        }
+function bigintValue(value) {
+    try {
+        return typeof value === 'bigint' ? value : BigInt(value ?? 0);
+    } catch {
+        return 0n;
     }
-    return coordinates;
 }
 
 async function findNextAvailable() {
-    sourceState.textContent = 'Synkroniserer\u2026';
+    sourceState.textContent = 'Synkroniserer…';
     sourceState.className = '';
 
     try {
-        const [systemState, capacity, coordinates] = await Promise.all([
-            registryActor.get_system_state(),
-            registryActor.get_total_capacity(),
-            Promise.resolve(registryCoordinates())
+        const [entries, balance] = await Promise.all([
+            registryActor.list_entries(),
+            registryActor.balance()
         ]);
 
-        let next = null;
-        let writtenInSweep = 0;
-
-        // Use small batches so the public canister is not hit by hundreds of
-        // simultaneous calls. Stop at the first unwritten coordinate.
-        for (let start = 0; start < coordinates.length && !next; start += 12) {
-            const batch = coordinates.slice(start, start + 12);
-            const captures = await Promise.all(batch.map(async (coordinate) => {
-                try {
-                    await registryActor.lens_capture({
-                        crystalId: coordinate.crystalId,
-                        facet: coordinate.facet
-                    });
-                    return { coordinate, written: true };
-                } catch {
-                    return { coordinate, written: false };
-                }
-            }));
-
-            for (const result of captures) {
-                if (result.written) {
-                    writtenInSweep += 1;
-                } else {
-                    next = result.coordinate;
-                    break;
-                }
-            }
-        }
+        const latest = entries.reduce((current, entry) => {
+            if (!current) return entry;
+            return bigintValue(entry.received_at) > bigintValue(current.received_at)
+                ? entry
+                : current;
+        }, null);
 
         registryState = {
-            next,
-            totalWritten: systemState[0],
-            activeCrystals: systemState[1],
-            capacity,
-            writtenInSweep
+            address: latest?.source_address || null,
+            latest,
+            totalWritten: balance.entry_count,
+            totalValue: balance.total_value
         };
 
-        sourceState.textContent = '\u25cf live canister';
+        sourceState.textContent = '● live registry';
         sourceState.className = 'live';
 
-        if (next) {
-            addressDisplay.textContent = formatCoordinate(next);
-            registryMeta.textContent = `${systemState[0].toLocaleString('da-DK')} skrevet \u00b7 ${systemState[1]} aktive krystaller \u00b7 kapacitet ${capacity.toLocaleString('da-DK')}`;
-            addLog('[Registry synced]', `${formatCoordinate(next)} \u00b7 n\u00e6ste ledige`, '#55dda0');
+        if (latest) {
+            const status = latest.verified ? 'verificeret' : 'afventer verifikation';
+            addressDisplay.textContent = latest.source_address;
+            registryMeta.textContent = `${balance.entry_count.toLocaleString('da-DK')} registreringer · ${status} · payload ${latest.payload_id}`;
+            addLog('[Registry synced]', `${latest.source_address} · senest registrerede live-adresse`, '#55dda0');
         } else {
-            addressDisplay.textContent = 'Ingen ledig koordinat i aktivt registervindue';
-            registryMeta.textContent = `${systemState[0].toLocaleString('da-DK')} adresser skrevet`;
-            addLog('[Registry full]', 'Ingen ledig koordinat fundet i det offentlige registervindue', '#f4a179');
+            addressDisplay.textContent = 'Privat live-register';
+            registryMeta.innerHTML = `<a href="${REGISTRY_URL}" target="_blank" rel="noopener noreferrer" style="color:#8eb8f6">Log ind i ChromaPlex Wallet for at se registreringerne ↗</a>`;
+            addLog(
+                '[Registry private]',
+                'Live-backend er forbundet · GitHub-demoen læser anonymt og kan derfor ikke se brugerens private entries',
+                '#55dda0'
+            );
         }
     } catch (error) {
         console.warn('Live registry unavailable:', error);
-        sourceState.textContent = '\u25cb registry utilg\u00e6ngeligt';
+        sourceState.textContent = '○ registry utilgængeligt';
         sourceState.className = 'offline';
-        addressDisplay.textContent = 'Live register kunne ikke l\u00e6ses';
-        registryMeta.innerHTML = `<a href="${REGISTRY_URL}" target="_blank" rel="noopener noreferrer" style="color:#8eb8f6">\u00c5bn ChromaPlex registry \u2197</a>`;
-        addLog('[Offline]', 'Bevarer PRISME-visualiseringen og fors\u00f8ger igen om 15 sek.', '#f4a179');
+        addressDisplay.textContent = 'Live register kunne ikke læses';
+        registryMeta.innerHTML = `<a href="${REGISTRY_URL}" target="_blank" rel="noopener noreferrer" style="color:#8eb8f6">Åbn ChromaPlex registry ↗</a>`;
+        addLog('[Offline]', 'Bevarer PRISME-visualiseringen og forsøger igen om 15 sek.', '#f4a179');
     }
 }
 
@@ -361,6 +341,10 @@ function updateEncoding(logChange = false) {
     activeByte.textContent = `0x${byte.toString(16).padStart(2, '0').toUpperCase()} \u00b7 ${byte}`;
     base4Value.textContent = activeLevels.slice(0, 4).join('');
 
+    if (word64Value) {
+        word64Value.textContent = encode64BitWord(payloadInput.value);
+    }
+
     activeLevels.forEach((level, index) => {
         const percent = (level / 3) * 100;
         meterElements[index].style.width = `${percent}%`;
@@ -376,7 +360,7 @@ function updateEncoding(logChange = false) {
     });
 
     if (logChange) {
-        const address = registryState?.next ? formatCoordinate(registryState.next) : 'registeradresse afventer';
+        const address = registryState?.address || 'live-adresse afventer';
         addLog(
             `[PRISME] \u201c${char === ' ' ? '\u2420' : char}\u201d \u2192 ${activeLevels.join('\u00b7')}`,
             `${address} \u00b7 UV-check ${activeLevels[4]}`,

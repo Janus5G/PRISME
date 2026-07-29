@@ -252,6 +252,8 @@
         .encoding div { padding: 10px 17px; background: rgba(10,15,24,.96); }
         .encoding span { display: block; color: var(--muted); font-size: .55rem; text-transform: uppercase; }
         .encoding strong { display: block; margin-top: 4px; color: #e9edf4; font-size: .73rem; font-weight: normal; }
+        .encoding .wide { grid-column: 1 / -1; }
+        #word64-value { font-size: .67rem; letter-spacing: .025em; word-break: break-all; }
 
         .log-header { margin-bottom: 10px; color: var(--cyan); font-size: .68rem; font-weight: bold; letter-spacing: .08em; }
         .log-entry {
@@ -306,7 +308,7 @@
     <section id="ui-overlay" class="panel" aria-label="PRISME registerstatus">
         <p class="eyebrow">CHROMAPLEX OS V2 / PRISME</p>
         <h1>GLASPLADE-REGISTER</h1>
-        <p class="intro">Fem dichroiske glasplader visualiserer den næste ledige koordinat fra det levende ChromaPlex-register.</p>
+        <p class="intro">Fem dichroiske glasplader visualiserer spektral bytekodning, mens otte bytes samles til et logisk 64-bit ord.</p>
 
         <div class="registry-state">
             <div><span>Datakilde</span><strong id="source-state">Forbinder…</strong></div>
@@ -320,8 +322,8 @@
         </div>
 
         <div class="address-card">
-            <span>Næste ledige registeradresse</span>
-            <p id="registry-address">Scanner registry…</p>
+            <span>Live registerstatus</span>
+            <p id="registry-address">Synkroniserer live-register…</p>
             <p id="registry-meta">Internet Computer · afventer svar</p>
         </div>
     </section>
@@ -340,7 +342,10 @@
 
         <div class="encoding">
             <div><span>Base-4</span><strong id="base4-value">1100</strong></div>
-            <div><span>Kapacitet</span><strong>10 bit / glimt</strong></div>
+            <div><span>Spektralt glimt</span><strong>8 data + 2 kontrol</strong></div>
+            <div class="wide"><span>64-bit binært ord · 8 UTF-8-bytes</span><strong id="word64-value">0x505249534D450000</strong></div>
+            <div><span>Logisk adressering</span><strong>64-bit</strong></div>
+            <div><span>Teoretisk adresserum</span><strong>2^64 adresser</strong></div>
         </div>
     </aside>
 
@@ -349,8 +354,8 @@
         <div id="log-entries"></div>
     </section>
 
-    <div id="stage-caption">5 glasplader · 4 intensitetsniveauer · UV-fejlkontrol</div>
+    <div id="stage-caption">5 glasplader · 8 bytes pr. 64-bit ord · UV-fejlkontrol</div>
 
-    <script type="module" src="./app.js?v=prisme-glass-registry-2"></script>
+    <script type="module" src="./app.js?v=prisme-64bit-private-registry-1"></script>
 </body>
 </html>
