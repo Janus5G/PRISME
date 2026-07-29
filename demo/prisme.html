@@ -190,6 +190,23 @@
 
         #registry-meta { margin: 6px 0 0; color: #6f7b8d; font-size: .61rem; }
 
+        .scaling-note-link {
+            margin: 12px 0 0;
+            padding-top: 10px;
+            border-top: 1px solid rgba(96, 114, 142, .24);
+            font-size: .65rem;
+            line-height: 1.45;
+        }
+
+        .scaling-note-link a {
+            color: #8eb8f6;
+            text-decoration: none;
+        }
+
+        .scaling-note-link a:hover {
+            text-decoration: underline;
+        }
+
         .panel-title {
             display: flex;
             align-items: center;
@@ -305,9 +322,9 @@
 <body>
     <div id="canvas-container" aria-hidden="true"></div>
 
-    <section id="ui-overlay" class="panel" aria-label="PRISME registerstatus">
+    <section id="ui-overlay" class="panel" aria-label="PRISME demonstrationsstatus">
         <p class="eyebrow">CHROMAPLEX OS V2 / PRISME</p>
-        <h1>GLASPLADE-REGISTER</h1>
+        <h1>GLASPLADE-DEMO</h1>
         <p class="intro">Fem dichroiske glasplader visualiserer spektral bytekodning, mens otte bytes samles til et logisk 64-bit ord.</p>
 
         <div class="registry-state">
@@ -322,10 +339,20 @@
         </div>
 
         <div class="address-card">
-            <span>Live registerstatus</span>
-            <p id="registry-address">Synkroniserer live-register…</p>
-            <p id="registry-meta">Internet Computer · afventer svar</p>
+            <span>Live wallet</span>
+            <p id="registry-address">Kontrollerer ChromaPlex Wallet…</p>
+            <p id="registry-meta">Offentlig demo · private data forbliver i wallet</p>
         </div>
+
+        <p class="scaling-note-link">
+            <a
+                href="https://github.com/Janus5G/PRISME/blob/main/demo/SCALING-NOTE.md"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Læs teknisk note om fysisk opskalering ↗
+            </a>
+        </p>
     </section>
 
     <aside id="channel-overlay" class="panel" aria-label="PRISME kanalniveauer">
@@ -348,14 +375,13 @@
             <div><span>Teoretisk adresserum</span><strong>2^64 adresser</strong></div>
         </div>
     </aside>
-
-    <section id="registry-log" class="panel" aria-label="Registerlog">
-        <div class="log-header">◈ LIVE REGISTER / OPTISK LEDGER</div>
+<section id="registry-log" class="panel" aria-label="Registerlog">
+        <div class="log-header">◈ PRISME 64-BIT / OPTISK KODNING</div>
         <div id="log-entries"></div>
     </section>
 
     <div id="stage-caption">5 glasplader · 8 bytes pr. 64-bit ord · UV-fejlkontrol</div>
 
-    <script type="module" src="./app.js?v=prisme-64bit-private-registry-1"></script>
+    <script type="module" src="./app.js?v=prisme-public-demo-final-1"></script>
 </body>
 </html>
