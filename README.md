@@ -1,4 +1,4 @@
-![Tests](https://img.shields.io/badge/tests-41%20passed-brightgreen) ![License](https://img.shields.io/badge/license-MIT-blue) ![Channels](https://img.shields.io/badge/channels-R%20G%20B%20V%20UV-blueviolet) ![Bits](https://img.shields.io/badge/bits%2Fflash-10-green)
+![Tests](https://img.shields.io/badge/tests-41%20passed-brightgreen) ![License](https://img.shields.io/badge/license-All%20rights%20reserved-darkred) ![Channels](https://img.shields.io/badge/channels-R%20G%20B%20V%20UV-blueviolet) ![Bits](https://img.shields.io/badge/bits%2Fflash-10-green)
 
 > :denmark: [Laes paa dansk](README.da.md)
 
@@ -365,7 +365,13 @@ All components available online. No custom parts required.
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+Copyright © 2026 Janus R. All rights reserved.
+
+This repository is published for technical review and documentation purposes only.
+
+No licence is granted to use, reproduce, modify, distribute, sublicense, sell, embed, deploy or commercially exploit the software, specification, binary format, documentation or derivative works without prior written permission from the copyright holder.
+
+No express or implied patent licence is granted.
 
 ---
 
