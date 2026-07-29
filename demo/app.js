@@ -4,11 +4,8 @@
 // ==============================================================
 
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.module.js';
-import { Actor, HttpAgent } from 'https://esm.sh/@dfinity/agent@3.4.3';
-
-const CANISTER_ID = '2acgr-4qaaa-aaaan-q6lra-cai';
-const IC_HOST = 'https://icp0.io';
-const REGISTRY_URL = 'https://chromaplex-wallet-sgm.caffeine.xyz/entries';
+const LIVE_APP_URL = 'https://chromaplex-wallet-sgm.caffeine.xyz';
+const REGISTRY_URL = `${LIVE_APP_URL}/entries`;
 
 const CHANNELS = [
     { key: 'R', name: 'RED', nm: 630, color: 0xff4a3d },
@@ -89,96 +86,49 @@ function addLog(title, detail, color = '#52637d') {
 }
 
 // --------------------------------------------------------------
-// Live PRISME registry reader.
-// Reads the existing entries from the live ChromaPlex backend.
-// It does not scan or construct 57-facet crystal coordinates.
+// Public live-wallet status.
+// The GitHub Pages demo does not request private registry entries.
+// It only verifies that the public ChromaPlex Wallet URL is reachable.
 // --------------------------------------------------------------
-const idlFactory = ({ IDL: Candid }) => {
-    const Entry = Candid.Record({
-        base: Candid.Nat,
-        exponent: Candid.Nat,
-        extraction_hash: Candid.Text,
-        ledger_proof: Candid.Vec(Candid.Text),
-        metadata_algorithm: Candid.Text,
-        metadata_encrypted: Candid.Vec(Candid.Text),
-        metadata_key_id: Candid.Vec(Candid.Text),
-        owner: Candid.Principal,
-        payload_id: Candid.Text,
-        received_at: Candid.Int,
-        rest: Candid.Nat,
-        source_address: Candid.Text,
-        value: Candid.Nat,
-        verified: Candid.Bool
-    });
-    const Balance = Candid.Record({
-        entry_count: Candid.Nat,
-        total_value: Candid.Nat
-    });
-    return Candid.Service({
-        list_entries: Candid.Func([], [Candid.Vec(Entry)], ['query']),
-        balance: Candid.Func([], [Balance], ['query'])
-    });
-};
-
-const agent = HttpAgent.createSync({ host: IC_HOST });
-const registryActor = Actor.createActor(idlFactory, { agent, canisterId: CANISTER_ID });
-
-function bigintValue(value) {
-    try {
-        return typeof value === 'bigint' ? value : BigInt(value ?? 0);
-    } catch {
-        return 0n;
-    }
-}
-
-async function findNextAvailable() {
-    sourceState.textContent = 'Synkroniserer…';
+async function checkLiveWallet() {
+    sourceState.textContent = 'Forbinder…';
     sourceState.className = '';
 
     try {
-        const [entries, balance] = await Promise.all([
-            registryActor.list_entries(),
-            registryActor.balance()
-        ]);
+        await fetch(LIVE_APP_URL, {
+            method: 'GET',
+            mode: 'no-cors',
+            cache: 'no-store'
+        });
 
-        const latest = entries.reduce((current, entry) => {
-            if (!current) return entry;
-            return bigintValue(entry.received_at) > bigintValue(current.received_at)
-                ? entry
-                : current;
-        }, null);
+        registryState = { online: true };
 
-        registryState = {
-            address: latest?.source_address || null,
-            latest,
-            totalWritten: balance.entry_count,
-            totalValue: balance.total_value
-        };
-
-        sourceState.textContent = '● live registry';
+        sourceState.textContent = '● live wallet';
         sourceState.className = 'live';
+        addressDisplay.textContent = 'Privat live-register';
+        registryMeta.innerHTML =
+            `<a href="${REGISTRY_URL}" target="_blank" rel="noopener noreferrer" style="color:#8eb8f6">Åbn ChromaPlex Wallet og se registreringerne ↗</a>`;
 
-        if (latest) {
-            const status = latest.verified ? 'verificeret' : 'afventer verifikation';
-            addressDisplay.textContent = latest.source_address;
-            registryMeta.textContent = `${balance.entry_count.toLocaleString('da-DK')} registreringer · ${status} · payload ${latest.payload_id}`;
-            addLog('[Registry synced]', `${latest.source_address} · senest registrerede live-adresse`, '#55dda0');
-        } else {
-            addressDisplay.textContent = 'Privat live-register';
-            registryMeta.innerHTML = `<a href="${REGISTRY_URL}" target="_blank" rel="noopener noreferrer" style="color:#8eb8f6">Log ind i ChromaPlex Wallet for at se registreringerne ↗</a>`;
-            addLog(
-                '[Registry private]',
-                'Live-backend er forbundet · GitHub-demoen læser anonymt og kan derfor ikke se brugerens private entries',
-                '#55dda0'
-            );
-        }
+        addLog(
+            '[Live wallet online]',
+            'Den offentlige PRISME-demo viser kodningspotentialet · private registerdata læses kun i ChromaPlex Wallet',
+            '#55dda0'
+        );
     } catch (error) {
-        console.warn('Live registry unavailable:', error);
-        sourceState.textContent = '○ registry utilgængeligt';
+        console.warn('Live wallet unavailable:', error);
+        registryState = { online: false };
+
+        sourceState.textContent = '○ live wallet utilgængelig';
         sourceState.className = 'offline';
-        addressDisplay.textContent = 'Live register kunne ikke læses';
-        registryMeta.innerHTML = `<a href="${REGISTRY_URL}" target="_blank" rel="noopener noreferrer" style="color:#8eb8f6">Åbn ChromaPlex registry ↗</a>`;
-        addLog('[Offline]', 'Bevarer PRISME-visualiseringen og forsøger igen om 15 sek.', '#f4a179');
+        addressDisplay.textContent = 'ChromaPlex Wallet kunne ikke nås';
+        registryMeta.innerHTML =
+            `<a href="${LIVE_APP_URL}" target="_blank" rel="noopener noreferrer" style="color:#8eb8f6">Prøv at åbne ChromaPlex Wallet ↗</a>`;
+
+        addLog(
+            '[Wallet offline]',
+            'PRISME-visualiseringen fortsætter lokalt',
+            '#f4a179'
+        );
     }
 }
 
@@ -360,10 +310,10 @@ function updateEncoding(logChange = false) {
     });
 
     if (logChange) {
-        const address = registryState?.address || 'live-adresse afventer';
+        const word64 = encode64BitWord(payloadInput.value);
         addLog(
             `[PRISME] \u201c${char === ' ' ? '\u2420' : char}\u201d \u2192 ${activeLevels.join('\u00b7')}`,
-            `${address} \u00b7 UV-check ${activeLevels[4]}`,
+            `${word64} \u00b7 UV-check ${activeLevels[4]}`,
             '#8d63ff'
         );
     }
@@ -430,6 +380,6 @@ window.addEventListener('resize', updateResponsiveFraming);
 updateResponsiveFraming();
 updateEncoding(false);
 addLog('[PRISME ready]', 'Fem glasplader online \u00b7 spektral encoder aktiv', '#67d8e7');
-void findNextAvailable();
-window.setInterval(() => { void findNextAvailable(); }, 15000);
+void checkLiveWallet();
+window.setInterval(() => { void checkLiveWallet(); }, 60000);
 animate();
