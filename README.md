@@ -354,6 +354,20 @@ All components available online. No custom parts required.
 
 ---
 
+## PRISME Binary Extension
+
+A separate additive extension documents portable binary packaging,
+software-level scaling and integration with customer-controlled systems.
+
+**Convert once. Integrate anywhere.**
+
+[Open PRISME Binary Extension v0.1](https://github.com/Janus5G/PRISME-Binary-Extension)
+
+The extension does not modify the original PRISME optical research concept,
+browser prototypes or university validation material.
+
+---
+
 ## Related repositories
 
 - [chromaplex-os-compiler](https://github.com/search?q=chromaplex-os-compiler) -- Chromaplex OS compiler
