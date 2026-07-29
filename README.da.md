@@ -364,7 +364,7 @@ En separat, additiv udvidelse dokumenterer portabel binær pakning, softwaremæs
 
 **Convert once. Integrate anywhere.**
 
-[Åbn PRISME Binary Extension v0.1](https://github.com/Janus5G/PRISME-Binary-Extension)
+[Åbn PRISME Binary Extension v0.1 på dansk](https://github.com/Janus5G/PRISME-Binary-Extension/blob/main/README.da.md)
 
 Udvidelsen ændrer ikke det oprindelige PRISME-koncept for optisk forskning, browserprototyperne eller materialet sendt til universiteterne.
 
