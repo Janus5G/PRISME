@@ -1,4 +1,4 @@
-![Tests](https://img.shields.io/badge/tests-41%20passed-brightgreen) ![License](https://img.shields.io/badge/license-MIT-blue) ![Channels](https://img.shields.io/badge/channels-R%20G%20B%20V%20UV-blueviolet) ![Bits](https://img.shields.io/badge/bits%2Fflash-10-green)
+![Tests](https://img.shields.io/badge/tests-41%20passed-brightgreen) ![License](https://img.shields.io/badge/license-All%20rights%20reserved-darkred) ![Channels](https://img.shields.io/badge/channels-R%20G%20B%20V%20UV-blueviolet) ![Bits](https://img.shields.io/badge/bits%2Fflash-10-green)
 
 > :gb: [Read in English](README.md)
 
@@ -369,7 +369,13 @@ Alt kan købes online. Ingen specialkomponenter.
 
 ## Licens
 
-Dette projekt er licenseret under [MIT-licensen](LICENSE).
+Copyright © 2026 Janus R. Alle rettigheder forbeholdes.
+
+Dette repository offentliggøres alene med henblik på teknisk gennemgang og dokumentation.
+
+Der gives ingen tilladelse til at bruge, kopiere, ændre, distribuere, underlicensere, sælge, indbygge, implementere eller kommercielt udnytte softwaren, specifikationen, det binære format, dokumentationen eller afledte værker uden forudgående skriftlig tilladelse fra rettighedshaveren.
+
+Der gives ingen udtrykkelig eller underforstået patentlicens.
 
 ---
 
