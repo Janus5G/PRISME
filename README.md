@@ -9,7 +9,16 @@
 > The medium is glass, draws zero power at rest, and lasts for millennia.
 
 ---
+## ESP32-S3 Controller Simulator
 
+Run the PRISME ESP32-S3 controller simulation directly in Wokwi:
+
+[Open the PRISME ESP32-S3 Controller Simulator](https://wokwi.com/projects/471448316897809409)
+
+The simulator includes the five spectral outputs (R, G, B, Violet and UV/control), an ILI9341 status display, local Start/Stop/Test controls, serial JSONL communication, simulated readback and CRC32 verification.
+
+> This is a laboratory software simulation. It does not represent validated physical optical timing, laser control or glass-writing performance.
+---
 ## Try it now
 
 [▶ Open the PRISME glass plate demo](https://janus5g.github.io/PRISME/demo/prisme.html)
