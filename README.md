@@ -18,6 +18,17 @@ Write assembly code, see each character as a light flash across five colour chan
 
 ![PRISME Encoder — text to spectral light flashes](assets/prisme-encoder-screenshot.png)
 ---
+## ESP32-S3 Controller Simulator
+
+Run the PRISME ESP32-S3 controller simulation directly in Wokwi:
+
+[Open the PRISME ESP32-S3 Controller Simulator](https://wokwi.com/projects/471448316897809409)
+
+The simulator includes the five spectral outputs (R, G, B, Violet and UV/control), an ILI9341 status display, local Start/Stop/Test controls, serial JSONL communication, simulated readback and CRC32 verification.
+
+> This is a laboratory software simulation. It does not represent validated physical optical timing, laser control or glass-writing performance.
+
+---
 
 ## Documentation
 
