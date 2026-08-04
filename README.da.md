@@ -23,6 +23,17 @@ Du kan skrive assembly-kode, se hvert tegn som et lysglimt med fem farvekanaler,
 > ![PRISME Encoder — tekst til lysglimt](assets/prisme-encoder-screenshot.png)
 
 ---
+## ESP32-S3-controller-simulator
+
+Kør PRISME ESP32-S3-controlleren direkte i Wokwi:
+
+[Åbn PRISME ESP32-S3-controller-simulatoren](https://wokwi.com/projects/471448316897809409)
+
+Simulatoren indeholder de fem spektrale udgange (rød, grøn, blå, violet og UV/kontrol), ILI9341-statusskærm, lokale Start/Stop/Test-knapper, seriel JSONL-kommunikation, simuleret readback og CRC32-verifikation.
+
+> Dette er en laboratoriesimulation i software. Den dokumenterer ikke valideret fysisk optisk timing, laserkontrol eller skrivning på glas.
+
+---
 
 ## Dokumentation
 
