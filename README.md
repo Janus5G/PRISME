@@ -140,7 +140,7 @@ optical-routing-simulator/
 
 ### 1. Browser demo (no installation)
 
-**Online:** [**Open PRISME demo**](https://Janus5G.github.io/PRISME/) -- runs directly in the browser.
+**Online:** [**Open PRISME demo**](https://janus5g.github.io/PRISME/demo/prisme.html) — runs directly in the browser.
 
 **Locally:** Download and open `demo/prisme.html` in your browser.
 
