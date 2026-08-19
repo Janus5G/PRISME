@@ -17,7 +17,9 @@
 Write assembly code, see each character as a light flash across five colour channels, and run programs on the virtual machine. Everything runs locally in the browser.
 
 ![PRISME Encoder — text to spectral light flashes](assets/prisme-encoder-screenshot.png)
+
 ---
+
 ## ESP32-S3 Controller Simulator
 
 Run the PRISME ESP32-S3 controller simulation directly in Wokwi:
@@ -35,9 +37,9 @@ The simulator includes the five spectral outputs (R, G, B, Violet and UV/control
 | Document | Audience | Download |
 |----------|----------|----------|
 | [Complete Guide](docs/PRISME_Komplet_Guide.docx) | Everyone -- 17 pages with shopping list and datacenter calculations | `.docx` (Google Docs compatible) |
-| [Hardware Schematic v2](docs/PRISME_v2_Hardwareskematik.docx) | Engineers / researchers -- 14 pages with component specifications | `.docx` (Google Docs 
-compatible) |
+| [Hardware Schematic v2](docs/PRISME_v2_Hardwareskematik.docx) | Engineers / researchers -- 14 pages with component specifications | `.docx` (Google Docs compatible) |
 | [University Validation Proposal](docs/PRISME_University_Validation_Proposal.docx) | DTU / university labs -- independent proof-of-concept protocol with testable hypotheses | `.docx` |
+
 ---
 
 ## What is PRISME?
@@ -60,7 +62,7 @@ Four data channels x 4 levels = **4^4 = 256 states = 1 byte**. The full characte
 
 PRISME is the physical layer beneath [Chromaplex OS](https://github.com/search?q=chromaplex-os). Chromaplex defines the abstract data structure -- facets, depths, numeric payloads. PRISME defines *how* that data is written and read in glass:
 
-```
+```text
 +--------------------------------------------------+
 |  Chromaplex OS v1/v2                             |
 |  Abstract: facets, depths, NPP payloads          |
@@ -70,18 +72,18 @@ PRISME is the physical layer beneath [Chromaplex OS](https://github.com/search?q
                          v
 +--------------------------------------------------+
 |  PRISME -- spectral encoder                      |
-|  Translates bytes to five-channel light flashes   |
-|  Adds UV checksum and RS error coding             |
-|  Packs into OPTB v1 binary format with CRC32      |
+|  Translates bytes to five-channel light flashes  |
+|  Adds UV checksum and RS error coding            |
+|  Packs into OPTB v1 binary format with CRC32     |
 +------------------------+-------------------------+
                          |
                          v
 +--------------------------------------------------+
 |  Physical medium                                 |
-|  5 curved dichroic glass plates                   |
-|  4 x 100 um air gaps                              |
-|  Voxels at 1 um spacing -- 100 MB/cm2             |
-|  Power at rest: 0 W                               |
+|  5 curved dichroic glass plates                  |
+|  4 x 100 um air gaps                             |
+|  Voxels at 1 um spacing -- 100 MB/cm2            |
+|  Power at rest: 0 W                              |
 +--------------------------------------------------+
 ```
 
@@ -89,21 +91,22 @@ PRISME is the physical layer beneath [Chromaplex OS](https://github.com/search?q
 
 ## Repository contents
 
-```
+```text
 PRISME/
 +-- README.md                            <-- this file (English)
 +-- README.da.md                         <-- Danish version
-+-- LICENSE                              <-- MIT
++-- LICENSE                              <-- All rights reserved
 +-- start-ors.bat                        <-- starts the simulator on Windows
 +-- optical-routing-simulator.zip        <-- physics simulator (Python/FastAPI)
 |
-+-- docs/                                <-- GitHub Pages + documentation
-|   +-- index.html                       <-- PRISME demo (GitHub Pages)
++-- docs/                                <-- documentation
+|   +-- index.html                       <-- documentation / project page
 |   +-- PRISME_Komplet_Guide.docx        <-- complete guide
 |   +-- PRISME_v2_Hardwareskematik.docx  <-- technical document
 |
 +-- demo/
-|   +-- prisme.html                      <-- assembler and VM (open locally)
+|   +-- prisme.html                      <-- browser assembler and VM
+|   +-- app.js                           <-- browser demo logic
 |
 +-- tests/
     +-- test_prisme.py                   <-- 41 tests
@@ -112,7 +115,7 @@ PRISME/
 <details>
 <summary>Simulator contents (click to expand)</summary>
 
-```
+```text
 optical-routing-simulator/
 +-- pyproject.toml
 +-- Dockerfile
@@ -160,6 +163,7 @@ python3 -m optical_router --reload
 ```
 
 Open in browser:
+
 - `http://127.0.0.1:8000` -- dashboard with PRISME encoder and physics simulator
 - `http://127.0.0.1:8000/prisme` -- assembler and VM
 
@@ -208,14 +212,14 @@ cd ors && pytest -v                   # 19 simulator tests (physics, compiler, A
 
 Any byte (0-255) is encoded as four quaternary digits plus a checksum:
 
-```
+```text
 Byte 72 ("H"):
 
-  72 / 64 = 1 remainder 8    ->  R = 1 (dim)
-   8 / 16 = 0 remainder 8    ->  G = 0 (off)
-   8 /  4 = 2 remainder 0    ->  B = 2 (medium)
-   0                          ->  V = 0 (off)
-   (1+0+2+0) mod 4 = 3       ->  UV = 3 (full)
+   72 / 64 = 1 remainder 8    ->  R = 1 (dim)
+    8 / 16 = 0 remainder 8    ->  G = 0 (off)
+    8 /  4 = 2 remainder 0    ->  B = 2 (medium)
+    0                          ->  V = 0 (off)
+    (1+0+2+0) mod 4 = 3       ->  UV = 3 (full)
 
 Base-4: 1020  |  Hex: 48  |  UV check: 3
 ```
@@ -226,7 +230,7 @@ The UV channel detects corrupt symbols and marks them as **erasures**. Reed-Solo
 
 ### Plate design
 
-```
+```text
     White light in
          |
 +----------------------------+
@@ -324,7 +328,7 @@ Opcode and operands encoded across four visible channels: `R = class, G = operat
 ### Verified channel indices
 
 | Channel | Tabulated | Computed (Sellmeier) | Deviation |
-|---------|-----------|----------|-----------|
+|---------|-----------|----------------------|-----------|
 | R 630 nm | 1.4580 | 1.4571 | 0.06% |
 | G 530 nm | 1.4613 | 1.4608 | 0.03% |
 | B 470 nm | 1.4650 | 1.4641 | 0.06% |

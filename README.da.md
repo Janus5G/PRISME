@@ -1,37 +1,34 @@
 ![Tests](https://img.shields.io/badge/tests-41%20passed-brightgreen) ![License](https://img.shields.io/badge/license-All%20rights%20reserved-darkred) ![Channels](https://img.shields.io/badge/channels-R%20G%20B%20V%20UV-blueviolet) ![Bits](https://img.shields.io/badge/bits%2Fflash-10-green)
 
-> :gb: [Read in English](README.md)
+> :uk: [Read in English](README.md)
 
+# PRISME -- Femkanals spektral datalagring
 
-# PRISME — Femkanals spektral datalagring
+> **Gem data i farvet lys.** Fem farver, fire intensitetsniveauer, ti bit pr. lysglimt.  
+> Den femte kanal er usynlig for øjet og fordobler fejlkorrektionskapaciteten.  
+> Mediet er glas, bruger nul strøm i hvile og er designet til meget lang levetid.
 
-> **Gem data i farvet lys.** Fem farver, fire styrker, ti bit per glimt.  
-> Den femte kanal er usynlig for øjet men fordobler fejlrettelsen.  
-> Pladen er glas, bruger nul strøm i hvile og holder i årtusinder.
+---
+
+## Prøv det nu
+
+[▶ Åbn PRISME-glaspladedemoen](https://janus5g.github.io/PRISME/demo/prisme.html)
+
+Skriv assembly-kode, se hvert tegn som et lysglimt på fem farvekanaler, og kør programmer på den virtuelle maskine. Alt kører lokalt i browseren.
+
+![PRISME Encoder — tekst til spektrale lysglimt](assets/prisme-encoder-screenshot.png)
 
 ---
 
-## ▶ Prøv det nu
+## ESP32-S3 Controller Simulator
 
-[▶ Åbn PRISME glasplade-demo](https://janus5g.github.io/PRISME/demo/prisme.html)
+Kør PRISME ESP32-S3 controller-simuleringen direkte i Wokwi:
 
-Du kan skrive assembly-kode, se hvert tegn som et lysglimt med fem farvekanaler, og køre programmer på den virtuelle maskine. Alt foregår lokalt i browseren.
+[Åbn PRISME ESP32-S3 Controller Simulator](https://wokwi.com/projects/471448316897809409)
 
-> ⚠️ Opdater linket ovenfor med dit eget GitHub-brugernavn hvis det er et andet repo.  
-> Aktivér GitHub Pages: **Settings → Pages → Source: Deploy from a branch → Branch: main, /docs → Save**
->
-> ![PRISME Encoder — tekst til lysglimt](assets/prisme-encoder-screenshot.png)
+Simulatoren indeholder de fem spektrale outputs (R, G, B, Violet og UV/control), et ILI9341-statusdisplay, lokale Start/Stop/Test-kontroller, seriel JSONL-kommunikation, simuleret readback og CRC32-verifikation.
 
----
-## ESP32-S3-controller-simulator
-
-Kør PRISME ESP32-S3-controlleren direkte i Wokwi:
-
-[Åbn PRISME ESP32-S3-controller-simulatoren](https://wokwi.com/projects/471448316897809409)
-
-Simulatoren indeholder de fem spektrale udgange (rød, grøn, blå, violet og UV/kontrol), ILI9341-statusskærm, lokale Start/Stop/Test-knapper, seriel JSONL-kommunikation, simuleret readback og CRC32-verifikation.
-
-> Dette er en laboratoriesimulation i software. Den dokumenterer ikke valideret fysisk optisk timing, laserkontrol eller skrivning på glas.
+> Dette er en laboratoriesoftware-simulering. Den repræsenterer ikke valideret fysisk optisk timing, laserstyring eller ydelse ved skrivning i glas.
 
 ---
 
@@ -39,101 +36,103 @@ Simulatoren indeholder de fem spektrale udgange (rød, grøn, blå, violet og UV
 
 | Dokument | Målgruppe | Download |
 |----------|-----------|----------|
-| [Komplet Guide](docs/PRISME_Komplet_Guide.docx) | Alle — 17 sider med indkøbsliste og datacenter-regnestykke | `.docx` (Google Docs-kompatibel) |
-| [Hardwareskematik v2](docs/PRISME_v2_Hardwareskematik.docx) | Ingeniører / forskere — 14 sider med komponentspecifikationer | `.docx` (Google Docs-kompatibel) |
-| [Universitetsvalideringsforslag](docs/PRISME_University_Validation_Proposal.docx) | DTU / universitetslaboratorier -- uafhaengig proof-of-concept protokol med testbare hypoteser | `.docx` |
+| [Komplet guide](docs/PRISME_Komplet_Guide.docx) | Alle -- 17 sider med indkøbsliste og datacenterberegninger | `.docx` (Google Docs-kompatibel) |
+| [Hardwarediagram v2](docs/PRISME_v2_Hardwareskematik.docx) | Ingeniører / forskere -- 14 sider med komponentspecifikationer | `.docx` (Google Docs-kompatibel) |
+| [University Validation Proposal](docs/PRISME_University_Validation_Proposal.docx) | DTU / universitetslaboratorier -- uafhængig proof-of-concept-protokol med testbare hypoteser | `.docx` |
+
 ---
 
 ## Hvad er PRISME?
 
-PRISME er et optisk datalagringssystem, der bruger fem bølgelængder lys med fire intensitetsniveauer til at gemme data i glasplader. Hvor en CD bruger én laser med to tilstande (1 bit), bruger PRISME fem samtidige kanaler med fire trin — **10 bit per lysglimt**.
+PRISME er et optisk datalagringssystem, der bruger fem bølgelængder af lys med fire intensitetsniveauer hver til at lagre data i glasplader. Hvor en CD bruger én laser med to tilstande (1 bit), bruger PRISME fem samtidige kanaler med fire niveauer -- **10 bit pr. lysglimt**.
 
 | Kanal | Farve | Bølgelængde | Rolle | Bit |
 |-------|-------|-------------|-------|-----|
-| R | Rød | 630 nm | Data (bit 7–6) | 2 |
-| G | Grøn | 530 nm | Data (bit 5–4) | 2 |
-| B | Blå | 470 nm | Data (bit 3–2) | 2 |
-| V | Violet | 410 nm | Data (bit 1–0) | 2 |
+| R | Rød | 630 nm | Data (bit 7-6) | 2 |
+| G | Grøn | 530 nm | Data (bit 5-4) | 2 |
+| B | Blå | 470 nm | Data (bit 3-2) | 2 |
+| V | Violet | 410 nm | Data (bit 1-0) | 2 |
 | UV | Ultraviolet | 405 nm | Fejlkontrol | 2 |
 
-Fire datakanaler × 4 niveauer = **4⁴ = 256 tilstande = 1 byte**. Hele tegnsættet i ét glimt. UV-kanalen bærer `(R+G+B+V) mod 4` og fordobler Reed-Solomon-fejlrettelsen.
+Fire datakanaler x 4 niveauer = **4^4 = 256 tilstande = 1 byte**. Hele byteområdet kan repræsenteres i ét lysglimt. UV-kanalen bærer `(R+G+B+V) mod 4` og fordobler Reed-Solomon-fejlkorrektionskapaciteten.
 
 ---
 
 ## Forbindelse til Chromaplex OS
 
-PRISME er det fysiske lag under [Chromaplex OS](https://github.com/search?q=chromaplex-os). Chromaplex definerer den abstrakte datastruktur — facetter, dybder, numeriske payloads. PRISME definerer, *hvordan* de data skrives og læses i glas:
+PRISME er det fysiske lag under [Chromaplex OS](https://github.com/search?q=chromaplex-os). Chromaplex definerer den abstrakte datastruktur -- facetter, dybder og numeriske payloads. PRISME definerer *hvordan* disse data skrives og læses i glas:
 
-```
-┌─────────────────────────────────────────────────┐
-│  Chromaplex OS v1/v2                            │
-│  Abstrakt: facetter, dybder, NPP-payloads       │
-│  Format: ChromaBridge numerisk protokol          │
-└────────────────────────┬────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────┐
-│  PRISME — spektral encoder                      │
-│  Oversætter bytes til fem-kanals lysglimt        │
-│  Tilføjer UV-kontrolsum og RS-fejlkodning        │
-│  Pakker i OPTB v1 binærformat med CRC32          │
-└────────────────────────┬────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────┐
-│  Fysisk medium                                  │
-│  5 buede dichroiske glasplader                   │
-│  4 × 100 µm luftspalter                         │
-│  Voxels med 1 µm afstand — 100 MB/cm²            │
-│  Strøm i hvile: 0 W                             │
-└─────────────────────────────────────────────────┘
+```text
++--------------------------------------------------+
+|  Chromaplex OS v1/v2                             |
+|  Abstrakt: facetter, dybder, NPP-payloads        |
+|  Format: ChromaBridge numerisk protokol           |
++------------------------+-------------------------+
+                         |
+                         v
++--------------------------------------------------+
+|  PRISME -- spektral encoder                      |
+|  Oversætter bytes til femkanals lysglimt          |
+|  Tilføjer UV-checksum og RS-fejlkodning           |
+|  Pakker i OPTB v1-binærformat med CRC32           |
++------------------------+-------------------------+
+                         |
+                         v
++--------------------------------------------------+
+|  Fysisk medie                                    |
+|  5 buede dikroiske glasplader                    |
+|  4 x 100 um luftmellemrum                        |
+|  Voxels ved 1 um afstand -- 100 MB/cm2            |
+|  Strømforbrug i hvile: 0 W                       |
++--------------------------------------------------+
 ```
 
 ---
 
 ## Repository-indhold
 
-```
+```text
 PRISME/
-├── README.md                            ← denne fil
-├── start-ors.bat                        ← starter simulatoren på Windows
-├── optical-routing-simulator.zip        ← fysik-simulator (Python/FastAPI)
-│
-├── docs/                                ← GitHub Pages + dokumentation
-│   ├── index.html                       ← PRISME-demo (GitHub Pages)
-│   ├── PRISME_Komplet_Guide.docx        ← guide til alle
-│   └── PRISME_v2_Hardwareskematik.docx  ← teknisk dokument
-│
-└── demo/
-    └── prisme.html                      ← assembler og VM (åbn lokalt)
++-- README.md                            <-- engelsk version
++-- README.da.md                         <-- denne fil (dansk)
++-- LICENSE                              <-- All rights reserved
++-- start-ors.bat                        <-- starter simulatoren på Windows
++-- optical-routing-simulator.zip        <-- fysiksimulator (Python/FastAPI)
+|
++-- docs/                                <-- dokumentation
+|   +-- index.html                       <-- dokumentations-/projektside
+|   +-- PRISME_Komplet_Guide.docx        <-- komplet guide
+|   +-- PRISME_v2_Hardwareskematik.docx  <-- teknisk dokument
+|
++-- demo/
+|   +-- prisme.html                      <-- browser-assembler og VM
+|   +-- app.js                           <-- browserdemo-logik
+|
++-- tests/
+    +-- test_prisme.py                   <-- 41 tests
 ```
 
 <details>
-<summary>Hvad simulatoren indeholder (klik for at folde ud)</summary>
+<summary>Simulatorens indhold (klik for at udvide)</summary>
 
-```
+```text
 optical-routing-simulator/
-├── pyproject.toml
-├── Dockerfile
-├── Makefile
-├── src/optical_router/
-│   ├── physics.py          ← Sellmeier-dispersion, Arrhenius-holdbarhed
-│   ├── compiler.py         ← OPTB v1 binær-compiler med CRC32
-│   ├── api.py              ← FastAPI: /simulate/write, /simulate/stream, /prisme
-│   ├── constants.py        ← fysiske konstanter (Boltzmann, Sellmeier-koeff.)
-│   ├── models.py           ← Pydantic-datamodeller
-│   ├── service.py          ← forretningslogik
-│   ├── errors.py           ← fejlhåndtering
-│   └── static/
-│       ├── index.html      ← dashboard med PRISME-encoder
-│       └── prisme.html     ← assembler (også via /prisme)
-├── tests/                  ← 19 tests (physics, compiler, API)
-│   ├── test_physics.py
-│   ├── test_compiler.py
-│   └── test_api.py
-└── examples/               ← eksempel-requests (JSON)
-    ├── write-request.json
-    └── stream-request.json
++-- pyproject.toml
++-- Dockerfile
++-- Makefile
++-- src/optical_router/
+|   +-- physics.py          <-- Sellmeier-dispersion, Arrhenius-retention
+|   +-- compiler.py         <-- OPTB v1-binær compiler med CRC32
+|   +-- api.py              <-- FastAPI: /simulate/write, /simulate/stream, /prisme
+|   +-- constants.py        <-- fysiske konstanter (Boltzmann, Sellmeier-koefficienter)
+|   +-- models.py           <-- Pydantic-datamodeller
+|   +-- service.py          <-- forretningslogik
+|   +-- errors.py           <-- fejlhåndtering
+|   +-- static/
+|       +-- index.html      <-- dashboard med PRISME-encoder
+|       +-- prisme.html     <-- assembler (også via /prisme)
++-- tests/                  <-- 19 tests (fysik, compiler, API)
++-- examples/               <-- eksempelrequests (JSON)
 ```
 
 </details>
@@ -142,17 +141,15 @@ optical-routing-simulator/
 
 ## Hurtig start
 
-### 1. Demo i browseren (ingen installation)
+### 1. Browserdemo (ingen installation)
 
-**Online:** [**Open PRISME demo**](https://janus5g.github.io/PRISME/demo/prisme.html) — runs directly in the browser.
+**Online:** [**Åbn PRISME-demoen**](https://janus5g.github.io/PRISME/demo/prisme.html) — kører direkte i browseren.
 
 **Lokalt:** Download og åbn `demo/prisme.html` i din browser.
 
-### 2. Kør den fulde fysik-simulator
+### 2. Kør den komplette fysiksimulator
 
 #### Linux / macOS / WSL (anbefalet)
-
-Hent repo'et, udpak simulatoren, og start:
 
 ```bash
 git clone https://github.com/Janus5G/PRISME.git
@@ -165,9 +162,10 @@ pip install -e ".[dev]"
 python3 -m optical_router --reload
 ```
 
-Åbn i browseren:
-- `http://127.0.0.1:8000` — dashboard med PRISME-encoder og fysik-simulator
-- `http://127.0.0.1:8000/prisme` — assembler og VM
+Åbn derefter i browseren:
+
+- `http://127.0.0.1:8000` -- dashboard med PRISME-encoder og fysiksimulator
+- `http://127.0.0.1:8000/prisme` -- assembler og VM
 
 Stop med `Ctrl+C`.
 
@@ -197,12 +195,13 @@ py -m venv .venv
 .\.venv\Scripts\python.exe -m optical_router --reload
 ```
 
-Eller dobbeltklik `start-ors.bat` i simulator-mappen.
+Eller dobbeltklik på `start-ors.bat` i simulator-mappen.
 
 #### Kør tests
 
 ```bash
-pytest -v    # 19 tests: physics, compiler, API
+python tests/test_prisme.py           # 41 PRISME-tests
+cd ors && pytest -v                   # 19 simulator-tests (fysik, compiler, API)
 ```
 
 ---
@@ -211,142 +210,143 @@ pytest -v    # 19 tests: physics, compiler, API
 
 ### Byte til lysglimt
 
-Enhver byte (0–255) kodes som fire kvaternære cifre plus en kontrolsum:
+Enhver byte (0-255) kodes som fire kvartære cifre plus en checksum:
 
-```
+```text
 Byte 72 ("H"):
 
-  72 ÷ 64 = 1 rest 8    →  R = 1 (svag)
-   8 ÷ 16 = 0 rest 8    →  G = 0 (slukket)
-   8 ÷  4 = 2 rest 0    →  B = 2 (medium)
-   0                     →  V = 0 (slukket)
-   (1+0+2+0) mod 4 = 3  →  UV = 3 (fuld)
+   72 / 64 = 1 rest 8          ->  R = 1 (svag)
+    8 / 16 = 0 rest 8          ->  G = 0 (slukket)
+    8 /  4 = 2 rest 0          ->  B = 2 (mellem)
+    0                           ->  V = 0 (slukket)
+    (1+0+2+0) mod 4 = 3        ->  UV = 3 (fuld)
 
 Base-4: 1020  |  Hex: 48  |  UV-check: 3
 ```
 
-### UV-kanalen og Reed-Solomon
+### UV-kanal og Reed-Solomon
 
-UV-kanalen opdager korrupte symboler og markerer dem som **udslettelser**. Reed-Solomon kan rette dobbelt så mange udslettelser som ukendte fejl. Med RS(255,223): 16 paritetssymboler retter 16 fejl *eller* **32 udslettelser**. Den "spildte" femte kanal fordobler fejlrettelseskapaciteten.
+UV-kanalen registrerer korrupte symboler og markerer dem som **erasures**. Reed-Solomon kan korrigere dobbelt så mange kendte erasures som ukendte fejl. Med RS(255,223): 16 paritetssymboler korrigerer 16 fejl *eller* **32 erasures**. Den femte kanal fordobler dermed fejlkorrektionskapaciteten.
 
 ### Pladedesign
 
-```
+```text
     Hvidt lys ind
-         ↓
-┌──────────────────────────┐
-│  Plade 1: RØD dichroisk  │  0,5 mm glas
-└──────────────────────────┘
-      ~~~ 100 µm luft ~~~
-┌──────────────────────────┐
-│  Plade 2: GRØN dichroisk │  0,5 mm glas
-└──────────────────────────┘
-      ~~~ 100 µm luft ~~~
-┌──────────────────────────┐
-│  Plade 3: BLÅ dichroisk  │  0,5 mm glas
-└──────────────────────────┘
-      ~~~ 100 µm luft ~~~
-┌──────────────────────────┐
-│  Plade 4: VIOLET dichroisk│ 0,5 mm glas
-└──────────────────────────┘
-      ~~~ 100 µm luft ~~~
-┌──────────────────────────┐
-│  Plade 5: UV kontrol     │  0,5 mm glas
-└──────────────────────────┘
-         ↓
-   5 fotodioder måler lyset
+         |
++----------------------------+
+|  Plade 1: RØD dikroisk     |  0.5 mm glas
++----------------------------+
+      ~~~ 100 um luft ~~~
++----------------------------+
+|  Plade 2: GRØN dikroisk    |  0.5 mm glas
++----------------------------+
+      ~~~ 100 um luft ~~~
++----------------------------+
+|  Plade 3: BLÅ dikroisk     |  0.5 mm glas
++----------------------------+
+      ~~~ 100 um luft ~~~
++----------------------------+
+|  Plade 4: VIOLET dikroisk  |  0.5 mm glas
++----------------------------+
+      ~~~ 100 um luft ~~~
++----------------------------+
+|  Plade 5: UV-kontrol       |  0.5 mm glas
++----------------------------+
+         |
+   5 fotodioder måler
+   transmitteret intensitet
 ```
 
-Total højde: ~3 mm. Buede plader (radius ~500 mm) holder lyset stabilt (Fabry-Pérot).
+Samlet højde: ~3 mm. Buede plader (radius ~500 mm) holder lyset stabilt i kaviteten (Fabry-Perot-princippet).
 
 ---
 
-## Strømbesparelse: datacenter-regnestykke
+## Strømbesparelse: datacenterberegning
 
-### Per enhed
+### Pr. enhed
 
 | Tilstand | PRISME | SSD | HDD |
 |----------|--------|-----|-----|
-| Hvile | **0 W** | 0,5–1 W | 5–8 W |
-| Holdbarhed | 1.000+ år | 5–10 år | 3–5 år |
+| Hvile | **0 W** | 0.5-1 W | 5-8 W |
+| Levetid | 1.000+ år | 5-10 år | 3-5 år |
 
-### 10 PB koldt arkiv — 1 år
+### 10 PB koldarkiv -- 1 år
 
-| | HDD (500 × 20 TB) | PRISME |
+| | HDD (500 x 20 TB) | PRISME |
 |---|---|---|
-| Strøm i hvile | 2.500 W døgnet rundt | 0 W |
-| Med køling (PUE 1,4) | 3.500 W | 0 W |
-| Energi per år | 30.660 kWh | 0 kWh |
-| **Eludgift per år** | **45.990 kr.** | **0 kr.** |
-| CO₂ per år | ~4,9 ton | 0 ton |
+| Strømforbrug i hvile | 2.500 W døgnet rundt | 0 W |
+| Med køling (PUE 1.4) | 3.500 W | 0 W |
+| Energi pr. år | 30.660 kWh | 0 kWh |
+| **Elpris/år** | **EUR 6.200 / USD 6.700** | **0** |
+| CO2 pr. år | ~4,9 ton | 0 ton |
 
 ### Over tid
 
-| Tidsramme | HDD (strøm + hardware) | PRISME | Besparelse |
-|-----------|------------------------|--------|------------|
-| 1 år | 45.990 kr. | 0 kr. | 45.990 kr. |
-| 5 år | 1.480.000 kr. | 0 kr. | ~1,5 mio. kr. |
-| 10 år | 2.960.000 kr. | 0 kr. | ~3 mio. kr. |
+| Tidsrum | HDD (strøm + hardware) | PRISME | Besparelse |
+|---------|-------------------------|--------|------------|
+| 1 år | EUR 6.200 | 0 | EUR 6.200 |
+| 5 år | EUR 200.000 | 0 | ~EUR 200.000 |
+| 10 år | EUR 400.000 | 0 | ~EUR 400.000 |
 
 ---
 
 ## Instruktionssæt
 
-Opkode og operander kodet i fire synlige kanaler: `R = klasse, G = operation, B = destination, V = kilde`.
+Opcode og operander kodes på tværs af fire synlige kanaler: `R = klasse, G = operation, B = destination, V = kilde`.
 
-| R·G | Instruktion | Virkning |
-|-----|-------------|----------|
-| 0·0 | `NOP` | Gør intet |
-| 0·1 | `HALT` | Standser maskinen |
-| 0·2 | `OUT r` | Udskriver register som tegn |
-| 0·3 | `EMIT r` | Udskriver register som tal |
-| 1·0 | `ADD d, s` | d = d + s |
-| 1·1 | `SUB d, s` | d = d − s |
-| 1·2 | `MUL d, s` | d = d × s |
-| 1·3 | `XOR d, s` | d = d ⊻ s |
-| 2·0 | `SET d, #n` | d = konstant |
-| 2·1 | `MOV d, s` | d = s |
-| 2·2 | `LOAD d, [s]` | d = hukommelse[s] |
-| 2·3 | `STORE [d], s` | hukommelse[d] = s |
-| 3·0 | `JMP adr` | Spring til adresse |
-| 3·1 | `JZ adr` | Spring hvis nulflag |
-| 3·2 | `JNZ adr` | Spring hvis ikke nulflag |
-| 3·3 | `CMP d, s` | Sammenlign, sæt nulflag |
+| R.G | Instruktion | Effekt |
+|-----|-------------|--------|
+| 0.0 | `NOP` | Ingen operation |
+| 0.1 | `HALT` | Stop maskinen |
+| 0.2 | `OUT r` | Udskriv register som tegn |
+| 0.3 | `EMIT r` | Udskriv register som tal |
+| 1.0 | `ADD d, s` | d = d + s |
+| 1.1 | `SUB d, s` | d = d - s |
+| 1.2 | `MUL d, s` | d = d * s |
+| 1.3 | `XOR d, s` | d = d ^ s |
+| 2.0 | `SET d, #n` | d = konstant |
+| 2.1 | `MOV d, s` | d = s |
+| 2.2 | `LOAD d, [s]` | d = memory[s] |
+| 2.3 | `STORE [d], s` | memory[d] = s |
+| 3.0 | `JMP addr` | Hop til adresse |
+| 3.1 | `JZ addr` | Hop hvis zero-flag er sat |
+| 3.2 | `JNZ addr` | Hop hvis zero-flag ikke er sat |
+| 3.3 | `CMP d, s` | Sammenlign og sæt zero-flag |
 
-4 registre (A, B, C, D) · 256 bytes hukommelse · én instruktion per lysglimt.
+4 registre (A, B, C, D) -- 256 bytes hukommelse -- én instruktion pr. lysglimt.
 
 ---
 
-## Fysik-simulator
+## Fysiksimulator
 
 | Modul | Beregner |
 |-------|----------|
-| `physics.py` | Sellmeier-dispersion, sfærisk aberration, Arrhenius-holdbarhed, peak-intensitet |
-| `compiler.py` | Kvantisering, OPTB v1 binær med CRC32, transmissions-timing |
-| `api.py` | `/simulate/write` (skrive-validering) og `/simulate/stream` (binær-kompilering) |
+| `physics.py` | Sellmeier-dispersion, sfærisk aberration, Arrhenius-retention, peak-intensitet |
+| `compiler.py` | Kvantisering, OPTB v1-binærformat med CRC32, transmissionstiming |
+| `api.py` | `/simulate/write` (skrivevalidering) og `/simulate/stream` (binær kompilering) |
 
-### Verificerede kanalindeks
+### Verificerede kanalindekser
 
-| Kanal | Tabuleret | Beregnet (Sellmeier) | Afvigelse |
-|-------|----------|----------|-----------|
-| R 630 nm | 1,4580 | 1,4571 | 0,06% |
-| G 530 nm | 1,4613 | 1,4608 | 0,03% |
-| B 470 nm | 1,4650 | 1,4641 | 0,06% |
-| V 410 nm | 1,4701 | 1,4691 | 0,07% |
-| UV 405 nm | 1,4706 | 1,4696 | 0,07% |
+| Kanal | Tabelværdi | Beregnet (Sellmeier) | Afvigelse |
+|-------|------------|----------------------|-----------|
+| R 630 nm | 1.4580 | 1.4571 | 0.06% |
+| G 530 nm | 1.4613 | 1.4608 | 0.03% |
+| B 470 nm | 1.4650 | 1.4641 | 0.06% |
+| V 410 nm | 1.4701 | 1.4691 | 0.07% |
+| UV 405 nm | 1.4706 | 1.4696 | 0.07% |
 
 ---
 
-## Faseplan
+## Roadmap
 
 | Fase | Mål | Budget | Tid |
 |------|-----|--------|-----|
-| 1 — Bevis | 100 bytes, 4 niveauer, UV-check | ~7.000 kr. | 2–3 mdr. |
-| 2 — Automatisering | 10.000+ voxels, piezo, kamera | ~25.000–40.000 kr. | 3–6 mdr. |
-| 3 — Permanent | Femtosekundlaser i fused silica | ~100.000–250.000 kr. | 6–12 mdr. |
-| 4 — Produktion | 20 enheder, netværk, sharding | ~500.000+ kr. | 12+ mdr. |
+| 1 -- Proof of concept | 100 bytes, 4 niveauer, UV-check | ~EUR 900 | 2-3 måneder |
+| 2 -- Automatisering | 10.000+ voxels, piezo-stage, kamera-readout | ~EUR 3.500-5.500 | 3-6 måneder |
+| 3 -- Permanent medie | Femtosekund-laserskrivning i fused silica | ~EUR 14.000-34.000 | 6-12 måneder |
+| 4 -- Produktion | 20 enheder i rack, netværk, sharding | ~EUR 70.000+ | 12+ måneder |
 
-Fase 3 kræver adgang til femtosekundlaser — samarbejde med DTU Fotonik eller tilsvarende.
+Fase 3 kræver adgang til en femtosekundlaser -- samarbejde med DTU Photonics eller en tilsvarende institution er den mest direkte vej.
 
 ---
 
@@ -354,52 +354,54 @@ Fase 3 kræver adgang til femtosekundlaser — samarbejde med DTU Fotonik eller 
 
 | Komponent | Pris |
 |-----------|------|
-| Raspberry Pi 5 (4 GB) | 600 kr. |
-| 4 laserdioder (405–635 nm) | 800 kr. |
-| 5 LED'er til aflæsning | 250 kr. |
-| 5 båndpasfiltre (10 nm) | 2.500 kr. |
-| 5 fotodioder (BPW34) | 150 kr. |
-| DAC (MCP4728) + ADC (MCP3208) | 110 kr. |
-| Objektglas + SU-8 fotoresist | 500 kr. |
-| XY-mikrometerslæde | 800 kr. |
-| Strømforsyning + kabler + diverse | 1.000 kr. |
-| **Total** | **~6.700 kr.** |
+| Raspberry Pi 5 (4 GB) | EUR 80 |
+| 4 laserdioder (405-635 nm) | EUR 110 |
+| 5 LED'er til readout | EUR 35 |
+| 5 bandpass-filtre (10 nm) | EUR 340 |
+| 5 fotodioder (BPW34) | EUR 20 |
+| DAC (MCP4728) + ADC (MCP3208) | EUR 15 |
+| Objektglas + SU-8 photoresist | EUR 70 |
+| XY-mikrometerstage | EUR 110 |
+| Strømforsyning + kabler + kabinet | EUR 135 |
+| **Total** | **~EUR 900** |
 
-Alt kan købes online. Ingen specialkomponenter.
+Alle komponenter kan købes online. Ingen specialfremstillede dele er nødvendige til denne prototype.
 
 ---
 
 ## PRISME Binary Extension
 
-En separat, additiv udvidelse dokumenterer portabel binær pakning, softwaremæssig skalering og integration med kundestyrede systemer.
+En separat additiv udvidelse dokumenterer portabel binær pakning,
+softwaremæssig skalering og integration med kundekontrollerede systemer.
 
 **Convert once. Integrate anywhere.**
 
-[Åbn PRISME Binary Extension v0.1 på dansk](https://github.com/Janus5G/PRISME-Binary-Extension/blob/main/README.da.md)
+[Åbn PRISME Binary Extension v0.1](https://github.com/Janus5G/PRISME-Binary-Extension)
 
-Udvidelsen ændrer ikke det oprindelige PRISME-koncept for optisk forskning, browserprototyperne eller materialet sendt til universiteterne.
+Udvidelsen ændrer ikke det oprindelige PRISME-optiske forskningskoncept,
+browserprototyperne eller universitetets valideringsmateriale.
 
 ---
 
 ## Relaterede repositories
 
-- [chromaplex-os-compiler](https://github.com/search?q=chromaplex-os-compiler) — Chromaplex OS compiler
-- [Cplex](https://github.com/search?q=Cplex+chromaplex) — Chromaplex kernebibliotek
-- [chromaplex-os-v2](https://github.com/search?q=chromaplex-os-v2) — Chromaplex OS version 2
-- [ChromaBridge](https://github.com/search?q=ChromaBridge) — Web3 datamigrations-pipeline med NPP
+- [chromaplex-os-compiler](https://github.com/search?q=chromaplex-os-compiler) -- Chromaplex OS compiler
+- [Cplex](https://github.com/search?q=Cplex+chromaplex) -- Chromaplex core library
+- [chromaplex-os-v2](https://github.com/search?q=chromaplex-os-v2) -- Chromaplex OS version 2
+- [ChromaBridge](https://github.com/search?q=ChromaBridge) -- Web3 data migration pipeline med NPP
 
 ---
 
 ## Licens
 
-Copyright © 2026 Janus R. Alle rettigheder forbeholdes.
+Copyright © 2026 Janus R. All rights reserved.
 
-Dette repository offentliggøres alene med henblik på teknisk gennemgang og dokumentation.
+Dette repository er publiceret udelukkende med henblik på teknisk gennemgang og dokumentation.
 
-Der gives ingen tilladelse til at bruge, kopiere, ændre, distribuere, underlicensere, sælge, indbygge, implementere eller kommercielt udnytte softwaren, specifikationen, det binære format, dokumentationen eller afledte værker uden forudgående skriftlig tilladelse fra rettighedshaveren.
+Der gives ingen licens til at bruge, reproducere, ændre, distribuere, sublicensere, sælge, indlejre, implementere eller kommercielt udnytte softwaren, specifikationen, binærformatet, dokumentationen eller afledte værker uden forudgående skriftlig tilladelse fra ophavsretsindehaveren.
 
 Der gives ingen udtrykkelig eller underforstået patentlicens.
 
 ---
 
-*PRISME — Gem data i farvet lys — Juli 2026*
+*PRISME -- Gem data i farvet lys -- juli 2026*
