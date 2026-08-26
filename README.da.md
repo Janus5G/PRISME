@@ -383,6 +383,18 @@ browserprototyperne eller universitetets valideringsmateriale.
 
 ---
 
+## PRISME Q8 — Launch Partner Materials
+
+### Launch Partner LOI
+
+- 🇩🇰 [Launch Partner LOI — Dansk](https://janus5g.github.io/PRISME/docs/launch-partner-loi.html)
+
+### PRISME Q8 Brochure
+
+- 🇩🇰 [PRISME Q8 Brochure — Dansk (PDF)](https://janus5g.github.io/PRISME/docs/PRISME_Q8_Brochure_Danish_Print.pdf)
+  
+---
+
 ## Relaterede repositories
 
 - [chromaplex-os-compiler](https://github.com/search?q=chromaplex-os-compiler) -- Chromaplex OS compiler
