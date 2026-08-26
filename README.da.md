@@ -394,6 +394,47 @@ browserprototyperne eller universitetets valideringsmateriale.
 - 🇩🇰 [PRISME Q8 Brochure — Dansk (PDF)](https://janus5g.github.io/PRISME/docs/PRISME_Q8_Brochure_Danish_Print.pdf)
   
 ---
+## Automated Verification Report ( Teoriverifikation )
+
+# Verification report
+
+Automated result: **PASS**.
+
+Executed checks include:
+- Python PRISME exhaustive all-byte roundtrip;
+- exhaustive single-symbol UV mutation detection;
+- deterministic 20,000 x 256-byte random-block roundtrip;
+- RS(255,223) parameter math;
+- strict C11 build with `-Wall -Wextra -Werror -pedantic` after correcting the source benchmark's POSIX clock declaration issue;
+- C benchmark run;
+- Product 1 architecture assertions;
+- Product 2 fail-closed programmer model negative tests;
+- Product 2 local-fiber delay calculation tests;
+- Product 3 51.2 Gbit/s / 100G / PCIe Gen4 x16 calculation checks;
+- Product 3 8 km / 10 km fiber propagation tests;
+- CSV/JSON parsing;
+- architecture-consistency checks against source ZIP (300 x 180 mm / 4-layer base and separate datacenter spool);
+- check that no fake Gerber/drill production files were inserted.
+
+## Tests that cannot be executed without physical/EDA hardware
+Not marked PASS:
+- schematic ERC;
+- FPGA synthesis/resource utilization and timing closure;
+- PCB DRC/DFM;
+- BGA X-ray/AOI;
+- rail/current/ripple/thermal measurements;
+- USB/JTAG/QSPI cycle counts on physical PCB;
+- hardware golden vectors;
+- 24/72 h endurance;
+- GPU/host benchmark;
+- PCIe DMA;
+- 100G BER/FEC/optical power;
+- 2-300 m and 8-10 km physical spool delay/jitter/temperature tests;
+- EMC/safety/compliance.
+
+Those remain explicitly OPEN because claiming them without hardware would be false.
+
+---
 
 ## Relaterede repositories
 
