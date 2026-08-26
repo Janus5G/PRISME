@@ -432,7 +432,7 @@ Not marked PASS:
 - 2-300 m and 8-10 km physical spool delay/jitter/temperature tests;
 - EMC/safety/compliance.
 
-Those remain explicitly OPEN because claiming them without hardware would be false.
+De forbliver udtrykkeligt ÅBNE, fordi det ville være usandt at gøre krav på dem uden hardware.
 
 ---
 
