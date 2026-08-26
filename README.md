@@ -383,45 +383,34 @@ browser prototypes or university validation material.
 
 ---
 
-## Automated Verification Report ( Teoriverifikation )
+# Digital Twin Verification Report
 
-# Verification report
+Date: 2026-08-18
 
-Automated result: **PASS**.
+Automated model test result: **24/24 PASS**.
 
-Executed checks include:
-- Python PRISME exhaustive all-byte roundtrip;
-- exhaustive single-symbol UV mutation detection;
-- deterministic 20,000 x 256-byte random-block roundtrip;
-- RS(255,223) parameter math;
-- strict C11 build with `-Wall -Wextra -Werror -pedantic` after correcting the source benchmark's POSIX clock declaration issue;
-- C benchmark run;
-- Product 1 architecture assertions;
-- Product 2 fail-closed programmer model negative tests;
-- Product 2 local-fiber delay calculation tests;
-- Product 3 51.2 Gbit/s / 100G / PCIe Gen4 x16 calculation checks;
-- Product 3 8 km / 10 km fiber propagation tests;
-- CSV/JSON parsing;
-- architecture-consistency checks against source ZIP (300 x 180 mm / 4-layer base and separate datacenter spool);
-- check that no fake Gerber/drill production files were inserted.
+Verified in software/model:
+- all 256 payload bytes round-trip through the quaternary symbol model
+- UV checksum detects every single-symbol substitution in the 4 data symbols
+- Q8 bijection, degree 8 and 1024 undirected edges
+- XOR neighbour rule for all vertices/dimensions
+- nominal 200 m and 300 m fiber-delay calculations
+- monotonic modeled fiber delay/loss
+- 100G raw byte-rate arithmetic and GPU-path bottleneck model
+- end-to-end SHA-256 equality for deterministic and random payloads
+- coil-winder geometry model has capacity above the initial 200 m target for the configured reference dimensions
 
-## Tests that cannot be executed without physical/EDA hardware
-Not marked PASS:
-- schematic ERC;
-- FPGA synthesis/resource utilization and timing closure;
-- PCB DRC/DFM;
-- BGA X-ray/AOI;
-- rail/current/ripple/thermal measurements;
-- USB/JTAG/QSPI cycle counts on physical PCB;
-- hardware golden vectors;
-- 24/72 h endurance;
-- GPU/host benchmark;
-- PCIe DMA;
-- 100G BER/FEC/optical power;
-- 2-300 m and 8-10 km physical spool delay/jitter/temperature tests;
-- EMC/safety/compliance.
+Not verified by these tests:
+- physical optical SNR/crosstalk
+- actual TIA stability/noise
+- real fiber insertion loss or delay
+- FPGA timing closure
+- 100G BER/link stability
+- RDMA/GPUDirect interoperability
+- thermal performance
+- mechanical durability
 
-Those remain explicitly OPEN because claiming them without hardware would be false.
+Those remain hardware acceptance tests.
 
 ---
 
