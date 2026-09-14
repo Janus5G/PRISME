@@ -423,6 +423,8 @@ Those remain hardware acceptance tests.
 ### PRISME Q8 Brochure
 
 - 🇬🇧 [PRISME Q8 Brochure — English (PDF)](https://janus5g.github.io/PRISME/docs/PRISME_Q8_Brochure_English_Print.pdf)
+
+  <!-- GitHub Pages redeploy 2026-09-14 -->
   
 ---
 
