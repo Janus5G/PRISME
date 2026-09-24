@@ -4,6 +4,8 @@
 
 # PRISME -- Five-channel spectral data storage
 
+![Lumen Maskot](prismetranssmall.png)
+
 > **Store data in coloured light.** Five colours, four intensity levels, ten bits per flash.  
 > The fifth channel is invisible to the eye but doubles the error correction.  
 > The medium is glass, draws zero power at rest, and lasts for millennia.
