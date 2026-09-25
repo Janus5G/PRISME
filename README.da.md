@@ -8,6 +8,8 @@
 > Den femte kanal er usynlig for øjet og fordobler fejlkorrektionskapaciteten.  
 > Mediet er glas, bruger nul strøm i hvile og er designet til meget lang levetid.
 
+![Lumen Maskot](prismetranssmall.png)
+
 ---
 
 ## Prøv det nu
