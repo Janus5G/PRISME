@@ -1,0 +1,17 @@
+
+# Show the Sponsor button on GitHub repositories.
+# Place this file at: .github/FUNDING.yml
+# (default branch — typically main)
+#
+# Account: https://github.com/sponsors/Janus5G
+# Profile: https://github.com/Janus5G
+
+github: Janus5G
+
+# Optional extra destinations (uncomment and fill in if used):
+# ko_fi: Janus5G
+# buy_me_a_coffee: Janus5G
+# patreon: Janus5G
+# custom:
+#   - "https://www.aagii.net"
+#   - "https://github.com/sponsors/Janus5G"
