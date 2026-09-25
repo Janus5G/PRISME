@@ -385,48 +385,6 @@ browserprototyperne eller universitetets valideringsmateriale.
 
 ---
 
-## PRISME Q8 — Launch Partner Materials
-
-### Launch Partner LOI
-
-- 🇩🇰 [Launch Partner LOI — Dansk](https://janus5g.github.io/PRISME/docs/launch-partner-loi.html)
-
-### PRISME Q8 Brochure
-
-- 🇩🇰 [PRISME Q8 Brochure — Dansk (PDF)](https://janus5g.github.io/PRISME/docs/PRISME_Q8_Brochure_Danish_Print.pdf)
-  
----
-# Digital Twin Verification Report
-
-Date: 2026-08-18
-
-Automated model test result: **24/24 PASS**.
-
-Verified in software/model:
-- all 256 payload bytes round-trip through the quaternary symbol model
-- UV checksum detects every single-symbol substitution in the 4 data symbols
-- Q8 bijection, degree 8 and 1024 undirected edges
-- XOR neighbour rule for all vertices/dimensions
-- nominal 200 m and 300 m fiber-delay calculations
-- monotonic modeled fiber delay/loss
-- 100G raw byte-rate arithmetic and GPU-path bottleneck model
-- end-to-end SHA-256 equality for deterministic and random payloads
-- coil-winder geometry model has capacity above the initial 200 m target for the configured reference dimensions
-
-Not verified by these tests:
-- physical optical SNR/crosstalk
-- actual TIA stability/noise
-- real fiber insertion loss or delay
-- FPGA timing closure
-- 100G BER/link stability
-- RDMA/GPUDirect interoperability
-- thermal performance
-- mechanical durability
-
-Der er fortsat tale om accepttest af hardware.
-
----
-
 ## Relaterede repositories
 
 - [chromaplex-os-compiler](https://github.com/search?q=chromaplex-os-compiler) -- Chromaplex OS compiler
