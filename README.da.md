@@ -4,6 +4,8 @@
 
 # PRISME -- Femkanals spektral datalagring
 
+![Lumen Maskot](prismetranssmall.png)
+
 > **Gem data i farvet lys.** Fem farver, fire intensitetsniveauer, ti bit pr. lysglimt.  
 > Den femte kanal er usynlig for øjet og fordobler fejlkorrektionskapaciteten.  
 > Mediet er glas, bruger nul strøm i hvile og er designet til meget lang levetid.
