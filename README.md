@@ -1,3 +1,4 @@
+
 ![Tests](https://img.shields.io/badge/tests-41%20passed-brightgreen) ![License](https://img.shields.io/badge/license-All%20rights%20reserved-darkred) ![Channels](https://img.shields.io/badge/channels-R%20G%20B%20V%20UV-blueviolet) ![Bits](https://img.shields.io/badge/bits%2Fflash-10-green)
 
 > :denmark: [Laes paa dansk](README.da.md)
@@ -13,6 +14,7 @@
 ---
 
 ## Try it now
+[prisme-demo.webm](https://github.com/user-attachments/assets/37ca4695-da04-442f-9e52-4d68b48c048f)
 
 [▶ Open the PRISME glass plate demo](https://janus5g.github.io/PRISME/demo/prisme.html)
 
