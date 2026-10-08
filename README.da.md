@@ -1,4 +1,4 @@
-![Tests](https://img.shields.io/badge/tests-41%20passed-brightgreen) ![License](https://img.shields.io/badge/license-All%20rights%20reserved-darkred) ![Channels](https://img.shields.io/badge/channels-R%20G%20B%20V%20UV-blueviolet) ![Bits](https://img.shields.io/badge/bits%2Fflash-10-green)
+![Tests](https://img.shields.io/badge/tests-41%20passed-brightgreen) ![License](https://img.shields.io/badge/license-MIT-green) ![Channels](https://img.shields.io/badge/channels-R%20G%20B%20V%20UV-blueviolet) ![Bits](https://img.shields.io/badge/bits%2Fflash-10-green)
 
 > :uk: [Read in English](README.md)
 
@@ -97,7 +97,7 @@ PRISME er det fysiske lag under [Chromaplex OS](https://github.com/search?q=chro
 PRISME/
 +-- README.md                            <-- engelsk version
 +-- README.da.md                         <-- denne fil (dansk)
-+-- LICENSE                              <-- All rights reserved
++-- LICENSE                              <-- MIT License
 +-- start-ors.bat                        <-- starter simulatoren på Windows
 +-- optical-routing-simulator.zip        <-- fysiksimulator (Python/FastAPI)
 |
@@ -396,13 +396,7 @@ browserprototyperne eller universitetets valideringsmateriale.
 
 ## Licens
 
-Copyright © 2026 Janus R. All rights reserved.
-
-Dette repository er publiceret udelukkende med henblik på teknisk gennemgang og dokumentation.
-
-Der gives ingen licens til at bruge, reproducere, ændre, distribuere, sublicensere, sælge, indlejre, implementere eller kommercielt udnytte softwaren, specifikationen, binærformatet, dokumentationen eller afledte værker uden forudgående skriftlig tilladelse fra ophavsretsindehaveren.
-
-Der gives ingen udtrykkelig eller underforstået patentlicens.
+Dette projekt er licenseret under MIT-licensen. Se filen [LICENSE](LICENSE) for detaljer.
 
 ---
 
