@@ -12,6 +12,10 @@
 
 ---
 
+![PRISME ChromaSpeechAI optisk PoC — AI-til-AI-kommunikation og kontrolleret forsinkelse](assets/prisme-chromaspeechai-optisk-poc-da.png)
+
+*Den enkleste forklaring på, hvordan PRISME kan bruges til kommunikation mellem AI’er, og hvordan kontrolleret forsinkelse kan bruges til midlertidig datalagring, buffering og fejlretning i det større hardwaresystem, der er bygget oven på PRISME.*
+
 ## Prøv det nu
 
 [▶ Åbn PRISME-glaspladedemoen](https://janus5g.github.io/PRISME/demo/prisme.html)
