@@ -14,7 +14,9 @@
 ---
 
 ## Try it now
-[prisme-demo.webm](https://github.com/user-attachments/assets/37ca4695-da04-442f-9e52-4d68b48c048f)
+![PRISME ChromaSpeechAI Optical PoC — AI-to-AI communication and controlled delay](assets/prisme-chromaspeechai-optical-poc.png)
+
+*The simplest explanation of how PRISME enables communication between AIs, and how controlled delay can be used for temporary data storage, buffering and error correction throughout the larger hardware system built on PRISME.*
 
 [▶ Open the PRISME glass plate demo](https://janus5g.github.io/PRISME/demo/prisme.html)
 
